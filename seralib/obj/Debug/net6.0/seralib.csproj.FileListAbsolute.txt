@@ -1,0 +1,15 @@
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/bin/Debug/net6.0/seralib
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/bin/Debug/net6.0/seralib.deps.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/bin/Debug/net6.0/seralib.runtimeconfig.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/bin/Debug/net6.0/seralib.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/bin/Debug/net6.0/seralib.pdb
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/obj/Debug/net6.0/seralib.csproj.AssemblyReference.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/obj/Debug/net6.0/seralib.GeneratedMSBuildEditorConfig.editorconfig
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/obj/Debug/net6.0/seralib.AssemblyInfoInputs.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/obj/Debug/net6.0/seralib.AssemblyInfo.cs
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/obj/Debug/net6.0/seralib.csproj.CoreCompileInputs.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/obj/Debug/net6.0/seralib.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/obj/Debug/net6.0/refint/seralib.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/obj/Debug/net6.0/seralib.pdb
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/obj/Debug/net6.0/seralib.genruntimeconfig.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/seralib/obj/Debug/net6.0/ref/seralib.dll
