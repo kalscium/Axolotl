@@ -1,0 +1,5 @@
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Test/bin/Debug/net6.0/publish/Test
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Test/bin/Debug/net6.0/publish/Test.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Test/bin/Debug/net6.0/publish/Test.deps.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Test/bin/Debug/net6.0/publish/Test.runtimeconfig.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Test/bin/Debug/net6.0/publish/Test.pdb
