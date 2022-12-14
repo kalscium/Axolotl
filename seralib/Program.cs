@@ -24,35 +24,45 @@
         public int age;
         public List<dynamic> skills;
         public Child child;
+        public string middleName;
 
-        public Person(string name, int age, List<dynamic> skills, Child child) {
+        public Person(string name, int age, List<dynamic> skills, Child child, string middleName=null) {
             this.name = name;
             this.age = age;
             this.skills = skills;
             this.child = child;
+            this.middleName = middleName;
         }
 
         public void greet() {
-            System.Console.WriteLine($"Hello, my name is {this.name} and I am {this.age} years old! Skill: {this.skills[0]}");
+            System.Console.WriteLine($"Hello, my name is {this.name} {this.middleName} and I am {this.age} years old! Skill: {this.skills[0]}");
         }
 
         public static uint address = 1001;
 
         public Person(SeraData data) {
             this.name = data.data[0];
-            this.age = int.Parse(data.data[1]);
+            this.age = (int) data.data[1];
             this.skills = data.data[2];
             this.child = data.data[3];
+            this.middleName = data.data[4];
         }
 
         public SeraBall seralib() {
-            return new SeraBall(Person.address) {this.name, this.age.ToString(), this.skills, new SeraData(this.child)};
+            return new SeraBall(Person.address) {
+                this.name,
+                (double) this.age,
+                this.skills,
+                this.child,
+                this.middleName,
+            };
         }
     }
 
     public class Child {
         public string name;
         public int age;
+        public List<dynamic> children = new List<dynamic>();
 
         public Child(string name, int age) {
             this.name = name;
@@ -67,11 +77,16 @@
 
         public Child(SeraData data) {
             this.name = data.data[0];
-            this.age = int.Parse(data.data[1]);
+            this.age = (int) data.data[1];
+            this.children = data.data[2];
         }
 
         public SeraBall seralib() {
-            return new SeraBall(Child.address) {this.name, this.age.ToString()};
+            return new SeraBall(Child.address) {
+                this.name,
+                (double) this.age,
+                this.children,
+            };
         }
     }
 }
