@@ -7,24 +7,55 @@ namespace parser
         public static string IDENTIFIER = "IDENTIFIER";
         public static string STR = "STR";
         public static string FUNNEL = "FUNNEL";
-        public static string PIPE = "PIPE";
-        public static string SWCH = "SWCH";
+        public static string DASH = "DASH";
+        public static string DOT = "DOT";
+        public static string SEMI = "SEMI";
+        public static string EOF = "EOF";
 
         // Dynamic
         public string type;
         public dynamic value;
-        public Position posStart;
-        public Position posEnd;
 
-        public Token(string type, dynamic value=null, Position posStart=null, Position posEnd=null) {
+        public Token(string type, dynamic value=null) {
             this.type = type;
             this.value = value;
+        }
 
-            if (posStart is not null) {
-                this.posStart = posStart.copy();
-                this.posEnd = posStart.copy();
-                this.posEnd.advance();
-            } if (posEnd is not null) this.posEnd = posEnd;
+        public bool matches(string type, dynamic value) {
+            return this.type == type && this.value.Equals(value);
+        }
+
+        public string repr() {
+            return this.value is null ? $"{this.type}": $"{this.type}:{this.value}";
+        }
+
+        // For Lexer Shortening
+        public static void Lexer_CharTok(string tokenChar, string tokenType, Lexer lexer, List<Token> tokenList) {
+            Token.Lexer_AppendTok(lexer.currentChar == tokenChar, lexer, tokenType, tokenList);
+        }
+
+        public static LexResult Lexer_FuncTok(bool condition, Func<LexResult> fun, List<Token> tokenList, Lexer lexer) {
+            if (condition) {
+                lexer.res.found = true;
+                LexResult res = new LexResult();
+                LexResult output = fun();
+
+                Token tok = (Token) res.register(output);
+                if (res.error is not null) return res;
+
+                tokenList.Add(tok);
+                if (res.cache is not null) tokenList.Add(res.cache);
+
+                return res;
+            } return new LexResult();
+        }
+
+        public static void Lexer_AppendTok(bool req, Lexer lexer, string tokenType, List<Token> tokenList) {
+            if (req) {
+                lexer.res.found = true;
+                tokenList.Add(new Token(tokenType));
+                lexer.advance();
+            }
         }
     }
 }
