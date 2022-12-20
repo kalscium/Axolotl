@@ -2,19 +2,30 @@
 {
     public class Program {
         public static void Main(string[] args) {
-            Person Dave = new Person("Dave", 21, new List<dynamic> {"programmer", "child"}, new Child("Bob", 5));
+            Child child = new Child("Bob", 5);
+            Person Martha = new Person("Martha", 19, new List<dynamic>() {"Basketball", "gun"}, child);
+            Person Dave = new Person("Dave", 21, new List<dynamic>() {"programmer", "dev"}, child, wife: Martha);
+
             string output = Dave.seralib().compile();
+            SeraBall.flush();
             File.WriteAllText("Person.slo", output);
 
-            Dictionary<uint, Type> des = new Dictionary<uint, Type>() {
-                {1001, typeof(Person)},
-                {1002, typeof(Child)},
+            List<Type> map = new List<Type>() {
+                typeof(Person),
+                typeof(Child),
             };
 
             string input = File.ReadAllText("Person.slo");
-            Parser parser = new Parser(input, des);
+            Parser parser = new Parser(input, map);
             Person Dave2 = parser.parse();
+            Parser.flush();
+
             Dave2.greet();
+            Person Martha2 = Dave2.wife;
+            Martha2.greet();
+
+            Martha2.child.age = 8;
+            Martha2.child.greet();
             Dave2.child.greet();
         }
     }
@@ -25,13 +36,15 @@
         public List<dynamic> skills;
         public Child child;
         public string middleName;
+        public Person wife;
 
-        public Person(string name, int age, List<dynamic> skills, Child child, string middleName=null) {
+        public Person(string name, int age, List<dynamic> skills, Child child, string middleName=null, Person wife=null) {
             this.name = name;
             this.age = age;
             this.skills = skills;
             this.child = child;
             this.middleName = middleName;
+            this.wife = wife;
         }
 
         public void greet() {
@@ -42,19 +55,21 @@
 
         public Person(SeraData data) {
             this.name = data.data[0];
-            this.age = (int) data.data[1];
+            this.age = data.data[1];
             this.skills = data.data[2];
             this.child = data.data[3];
             this.middleName = data.data[4];
+            this.wife = data.data[5];
         }
 
         public SeraBall seralib() {
-            return new SeraBall(Person.address) {
+            return new SeraBall(this) {
                 this.name,
-                (double) this.age,
+                this.age,
                 this.skills,
                 this.child,
                 this.middleName,
+                this.wife,
             };
         }
     }
@@ -77,14 +92,14 @@
 
         public Child(SeraData data) {
             this.name = data.data[0];
-            this.age = (int) data.data[1];
+            this.age = data.data[1];
             this.children = data.data[2];
         }
 
         public SeraBall seralib() {
-            return new SeraBall(Child.address) {
+            return new SeraBall(this) {
                 this.name,
-                (double) this.age,
+                this.age,
                 this.children,
             };
         }
