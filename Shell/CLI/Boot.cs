@@ -21,6 +21,12 @@ namespace cli
                 Environment.Exit(1);
             } else log($"Loaded Enviornment [{this.env}]!");
 
+            if (!File.Exists(this.env + "Axolotl.init")) {
+                log("Warning: Axolotl initialisation file not found!");
+                log("Creating Axolotl initialisatino file...");
+                File.WriteAllText(this.env + "Axolotl.init", "Axolotl by Greenchild 2022");
+            } log("Found Axolotl initialisation file!");
+
             if (!Directory.Exists(this.env + "bin")) {
                 log("Warning: Bin folder not found!");
                 log("Creating bin folder...");
