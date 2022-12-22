@@ -10,8 +10,9 @@
 namespace axolotl
 {
 	public class Axolotl {
-		public static void entry() {
+		public static void entry(dynamic interpackage) {
 			Console.WriteLine("Axoltol Function run");
+			Console.WriteLine($"Sign: {interpackage.sign}");
 		}
 	}
 }

@@ -61,26 +61,26 @@ namespace parser
                     values.Add(val);
                     order.Add(0);
                 }
-            } return res.success(new data.InterPackage(order, switches, values));
+            } return res.success(new data.Argument(order, switches, values));
         }
 
         public static RTResult visit_ExprNode(ExprNode node) {
             RTResult res = new RTResult();
 
             List<string> cmds = res.register(Interpreter.visit_GetNode(node.getNode));
-            data.InterPackage interpackage = res.register(Interpreter.visit_ArgsNode(node.argsNode));
-            interpackage.cmds = cmds;
+            data.Argument argument = res.register(Interpreter.visit_ArgsNode(node.argsNode));
+            argument.cmds = cmds;
 
-            return res.success(interpackage);
+            return res.success(argument);
         }
 
-        public static void visit_IterNode(IterNode node) {
+        public static RTResult visit_IterNode(IterNode node) {
             RTResult res = new RTResult();
-            data.InterPackage interpackage = res.register(Interpreter.visit_ExprNode(node.elementNodes[0]));
-            
-            foreach (UInt16 i in interpackage.order) {
-                System.Console.WriteLine(i);
-            }
+            List<data.Argument> result = new List<data.Argument>();
+            for (int i = 0; i < node.elementNodes.Count; i++) {
+                data.Argument arg = res.register(Interpreter.visit_ExprNode(node.elementNodes[i]));
+                result.Add(arg);
+            } return res.success(result);
         }
     }
 }
