@@ -2,15 +2,15 @@ using System.Reflection;
 
 namespace data
 {
-    public class InterPackage {
-        public User user;
-        public List<string> cmds;
-        public List<string> switches;
-        public List<dynamic> values;
-        public List<ushort> order;
-        public string sign;
+    public class Interpackage {
+        public User user {get;}
+        public List<string> cmds {get;}
+        public List<string> switches {get;}
+        public List<dynamic> values {get;}
+        public List<ushort> order {get;}
+        public string sign {get;}
 
-        public InterPackage(User user, string password, Argument arg) {
+        public Interpackage(User user, string password, Argument arg) {
             this.user = user;
             this.cmds = arg.cmds;
 
@@ -18,10 +18,10 @@ namespace data
             this.values = arg.values;
             this.order = arg.order;
 
-            this.sign = InterPackage.getSign(this.user, password, cmds[0]);
+            this.sign = Interpackage.getSign(this.user, password, cmds[0]);
         }
 
-        public InterPackage(List<ushort> order, List<string> switches, List<dynamic> values) {
+        public Interpackage(List<ushort> order, List<string> switches, List<dynamic> values) {
             this.switches = switches;
             this.values = values;
             this.order = order;
@@ -34,6 +34,7 @@ namespace data
             return cmd;
         }
 
+        // 'Dictionary Run' should not be used in interpackage
         public string run(Dictionary<string, Type> dict) {
             if (this.cmds.Count == 0) return null;
             string cmd = this.advance();
@@ -51,12 +52,32 @@ namespace data
             if (this.cmds.Count == 0) return null;
             string cmd = this.advance();
 
-            Type result = InterPackage.dll(Path.Combine(directory, cmd));
+            Type result = Interpackage.dll(Path.Combine(directory, cmd));
             if (result is null) return $"[Axolotl] Error: Cmd '{cmd}' not found in {directory}";
 
-            result.GetMethod("entry").Invoke(null, new object[] {this});
+            if (this.switches.Contains("h") || this.switches.Contains("help")) {
+                object helpMenu = result.GetField("helpMenu").GetValue(null);
+                System.Console.WriteLine(helpMenu.ToString());
+                return null;
+            }
+
+            SeraLib.SeraBall.flush();
+            result.GetMethod("entry").Invoke(null, new object[] {this.seralib().compile()});
 
             return null;
+        }
+
+        public bool checkSwitch(params string[] swtches) {
+            bool isSwitch = true;
+            for (int i = 0; i < swtches.Length; i++) {
+                if (!this.switches.Contains(swtches[i])) isSwitch = false;
+            } return isSwitch;
+        }
+
+        public int getSwitch(string swtch) {
+            if (!this.checkSwitch(swtch)) return -1;
+            int idx = this.switches.IndexOf(swtch);
+            return this.order[idx];
         }
 
         /////////////////////
@@ -93,7 +114,7 @@ namespace data
 
         public static uint address = 1003;
 
-        public InterPackage(SeraLib.SeraData data) {
+        public Interpackage(SeraLib.SeraData data) {
             this.user = data.data[0];
             this.cmds = listTo<dynamic, string>(data.data[1]);
             this.switches = listTo<dynamic, string>(data.data[2]);

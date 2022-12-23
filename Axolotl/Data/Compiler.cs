@@ -6,13 +6,13 @@ namespace data
         public static List<Type> mapped = new List<Type>() {
             typeof(User),
             typeof(Password),
-            typeof(InterPackage),
+            typeof(Interpackage),
             typeof(UserCol),
         };
 
         public static void compile(string loc, dynamic data) {
-            string result = data.seralib().compile();
             SeraBall.flush();
+            string result = data.seralib().compile();
             File.WriteAllText(loc, result);
         }
 

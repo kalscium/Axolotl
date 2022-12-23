@@ -3,7 +3,8 @@
 namespace data
 {
     public class Program {
-        public static void Main(string[] args) {
+        public static void Main() {
+            string[] args = new string[] {"/media/greenchild/Gata/Ethan/Axolotl"};
             new cli.Boot(args[0]).boot();
             new cli.Cli(args[0]).run();
             // while (true) {

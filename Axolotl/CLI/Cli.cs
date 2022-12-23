@@ -4,10 +4,10 @@ namespace cli
 {
     public class Cli {   
         public static string banner = " $$$$$$\\                      $$\\            $$\\     $$\\ \n$$  __$$\\                     $$ |           $$ |    $$ |\n$$ /  $$ |$$\\   $$\\  $$$$$$\\  $$ | $$$$$$\\ $$$$$$\\   $$ |\n$$$$$$$$ |\\$$\\ $$  |$$  __$$\\ $$ |$$  __$$\\\\_$$  _|  $$ |\n$$  __$$ | \\$$$$  / $$ /  $$ |$$ |$$ /  $$ | $$ |    $$ |\n$$ |  $$ | $$  $$<  $$ |  $$ |$$ |$$ |  $$ | $$ |$$\\ $$ |\n$$ |  $$ |$$  /\\$$\\ \\$$$$$$  |$$ |\\$$$$$$  | \\$$$$  |$$ |\n\\__|  \\__|\\__/  \\__| \\______/ \\__| \\______/   \\____/ \\__|";
-        public static string version = "1.0.0";
+        public static string version = "2.1.0";
 
         public User user;
-        public InterPackage interPackage;
+        public Interpackage interPackage;
         public string env;
         public string bin;
 
@@ -39,7 +39,7 @@ namespace cli
             for (int i = 0; i < args.Count; i++) {
                 Argument arg = args[i];
                 if (arg.cmds[0] == "exit") Environment.Exit(0);
-                InterPackage interpackage = new InterPackage(this.user, password, arg);
+                Interpackage interpackage = new Interpackage(this.user, password, arg);
                 string output = interpackage.run(this.bin);
                 if (output is not null) System.Console.WriteLine(output);
             }

@@ -1,8 +1,8 @@
 namespace data
 {
     public class Password {
-        public string hash;
-        public string salt;
+        public string hash {get;}
+        public string salt {get;}
 
         public Password(string hash, string salt) {
             this.hash = hash;
