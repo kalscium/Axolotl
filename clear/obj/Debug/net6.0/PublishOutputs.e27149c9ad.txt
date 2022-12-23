@@ -1,0 +1,5 @@
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/bin/Debug/net6.0/publish/clear
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/bin/Debug/net6.0/publish/clear.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/bin/Debug/net6.0/publish/clear.deps.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/bin/Debug/net6.0/publish/clear.runtimeconfig.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/bin/Debug/net6.0/publish/clear.pdb

@@ -1,0 +1,15 @@
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/bin/Debug/net6.0/clear
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/bin/Debug/net6.0/clear.deps.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/bin/Debug/net6.0/clear.runtimeconfig.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/bin/Debug/net6.0/clear.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/bin/Debug/net6.0/clear.pdb
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/obj/Debug/net6.0/clear.csproj.AssemblyReference.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/obj/Debug/net6.0/clear.GeneratedMSBuildEditorConfig.editorconfig
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/obj/Debug/net6.0/clear.AssemblyInfoInputs.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/obj/Debug/net6.0/clear.AssemblyInfo.cs
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/obj/Debug/net6.0/clear.csproj.CoreCompileInputs.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/obj/Debug/net6.0/clear.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/obj/Debug/net6.0/refint/clear.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/obj/Debug/net6.0/clear.pdb
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/obj/Debug/net6.0/clear.genruntimeconfig.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/clear/obj/Debug/net6.0/ref/clear.dll
