@@ -29,19 +29,23 @@ namespace SeraLib
         }
     }
 
+    public enum Entry {
+        Parser
+    }
+
     public struct SeraData {
-        public dynamic data;
-        public SeraData(dynamic data) {
+        public object data;
+        public SeraData(object data) {
             this.data = data;
         }
     }
 
     public class Parser {
-        public static Dictionary<int, dynamic> cache = new Dictionary<int, dynamic>();
         public string text;
         public int pos = -1;
         public char currentChar;
         public Dictionary<uint, Type> dest;
+        public Dictionary<int, object> cache = new Dictionary<int, object>();
 
         public Parser(string text, Dictionary<uint, Type> dest) {
             this.text = text;
@@ -49,11 +53,11 @@ namespace SeraLib
             this.advance();
         }
 
-        public Parser(string text, List<Type> list) {
+        public Parser(string text, Type[] list) {
             this.text = text;
 
             this.dest = new Dictionary<uint, Type>();
-            for (int i = 0; i < list.Count; i++) {
+            for (int i = 0; i < list.Length; i++) {
                 Type type = list[i];
                 this.dest[(uint) type.GetField("address").GetValue(null)] = type;
             } this.advance();
@@ -68,35 +72,35 @@ namespace SeraLib
             }
         }
 
-        public dynamic parse() {
+        public object parse() {
             return this.expr();
         }
 
-        dynamic expr() {
+        object expr() {
             if (this.currentChar == Symbols.raw) return this.getRaw();
             uint address = this.address();
             int instance = this.instance();
 
-            if (cache.ContainsKey(instance)) return cache[instance];
+            if (this.cache.ContainsKey(instance)) return this.cache[instance];
 
-            List<dynamic> data = this.list();
+            List<object> data = this.list();
 
             if (address == SeraGenerics.List.address) return data;
             if (address == SeraGenerics.Null.address) return null;
-            if (address == SeraGenerics.Number.address) return SeraGenerics.Number.parse(data[1], data[0]);
+            if (address == SeraGenerics.Number.address) return SeraGenerics.Number.parse((string) data[1], (string) data[0]);
 
-            dynamic result = Activator.CreateInstance(this.dest[address], new object[] {new SeraData(data)});
-            cache[instance] = result;
+            object result = Activator.CreateInstance(this.dest[address], new object[] {Entry.Parser, data});
+            this.cache[instance] = result;
 
             return result;
         }
 
-        List<dynamic> list() {
+        List<object> list() {
             if (this.currentChar != Symbols.open) {
                 this.error();
             } this.advance();
 
-            List<dynamic> data = new List<dynamic>();
+            List<object> data = new List<object>();
 
             if (this.currentChar == Symbols.close) {
                 this.advance();
@@ -119,7 +123,7 @@ namespace SeraLib
             } this.advance();
 
             string result = "";
-            while (new List<char>() {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}.Contains(this.currentChar)) {
+            while (new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}.Contains(this.currentChar)) {
                 result += this.currentChar;
                 this.advance();
             } return uint.Parse(result);
@@ -131,7 +135,7 @@ namespace SeraLib
             } this.advance();
 
             string result = "";
-            while (new List<char>() {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}.Contains(this.currentChar)) {
+            while (new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}.Contains(this.currentChar)) {
                 result += this.currentChar;
                 this.advance();
             } return int.Parse(result);
@@ -152,20 +156,25 @@ namespace SeraLib
         public void error() {
             throw new Exception("[SeraLib Error] Could not parse data");
         }
-
-        public static void flush() {
-            cache = new Dictionary<int, dynamic>();
-        }
     }
 
-    public class SeraBall: List<dynamic> {
-        public static List<int> cache = new List<int>();
+    public class SeraBall: List<object> {
+        public List<int> cache = new List<int>();
         public uint address;
-        public dynamic instance;
+        public object instance;
 
-        public SeraBall(dynamic instance) {
+        public SeraBall(object instance) {
             this.instance = instance;
             this.address = (uint) instance.GetType().GetField("address").GetValue(null);
+        }
+
+        public string compile(List<int> cache) {
+            this.cache = cache;
+            string result = "";
+            result += this.getAddress();
+            result += this.getInstance();
+
+            return result;
         }
 
         public string compile() {
@@ -183,10 +192,10 @@ namespace SeraLib
         string getInstance() {
             int hashCode = this.instance.GetHashCode();
 
-            if (!cache.Contains(hashCode)) {
-                cache.Add(hashCode);
-                return $"{Symbols.inst}{cache.IndexOf(hashCode)}{this.list()}";
-            } return $"{Symbols.inst}{cache.IndexOf(hashCode)}";
+            if (!this.cache.Contains(hashCode)) {
+                this.cache.Add(hashCode);
+                return $"{Symbols.inst}{this.cache.IndexOf(hashCode)}{this.list()}";
+            } return $"{Symbols.inst}{this.cache.IndexOf(hashCode)}";
         }
 
         string list() {
@@ -201,30 +210,28 @@ namespace SeraLib
         }
 
         string getNested(int index) {
-            if (this[index] is string) return $"{Symbols.raw}{this[index]}";
-            if (this[index] is List<dynamic>) return new SeraGenerics.List(this[index]).seralib().compile();
-            if (this[index] is null) return new SeraGenerics.Null().seralib().compile();
-            if (SeraGenerics.Number.map.ContainsValue(this[index].GetType())) return new SeraGenerics.Number(this[index]).seralib().compile();
-            if (this[index] is not SeraData) try {return this[index].seralib().compile();} catch {throw new Exception("[SeraLib Error] Cannot compile unknown object");}
-            return this[index].data.seralib().compile();
-        }
+            Func<object, string> compile = (object obj) => ((SeraBall) obj.GetType().GetMethod("seralib").Invoke(this[index], new object[0])).compile(this.cache);
 
-        public static void flush() {
-            cache = new List<int>();
+            if (this[index] is string) return $"{Symbols.raw}{this[index]}";
+            if (this[index] is List<object>) return new SeraGenerics.List((List<object>) this[index]).seralib().compile(this.cache);
+            if (this[index] is null) return new SeraGenerics.Null().seralib().compile(this.cache);
+            if (SeraGenerics.Number.map.ContainsValue(this[index].GetType())) return new SeraGenerics.Number(this[index]).seralib().compile(this.cache);
+            if (this[index] is not SeraData) try {return compile(this[index]);} catch {throw new Exception("[SeraLib Error] Cannot compile unknown object");}
+            return compile(((SeraData) this[index]).data);
         }
     }
-
+ 
     public class SeraGenerics {
         public static Dictionary<uint, Type> dest = new Dictionary<uint, Type>() {
             {List.address, typeof(List)}
         };
 
         public class List {
-            public List<dynamic> list;
+            public List<object> list;
 
             public static uint address = 1;
 
-            public List(List<dynamic> list) {
+            public List(List<object> list) {
                 this.list = list;
             }
 
@@ -249,7 +256,7 @@ namespace SeraLib
         }
 
         public class Number {
-            public dynamic number;
+            public object number;
             public string type;
             public static uint address = 3;
             public static Dictionary<string, Type> map = new Dictionary<string, Type> {
@@ -265,7 +272,7 @@ namespace SeraLib
                 {"nui", typeof(nuint)},
             };
 
-            public Number(dynamic number) {
+            public Number(object number) {
                 this.number = number;
                 this.type = map.FirstOrDefault(x => x.Value == number.GetType()).Key;
             }
@@ -274,7 +281,7 @@ namespace SeraLib
                 return new SeraBall(this) {this.number.ToString(), type};
             }
 
-            public static dynamic parse(string name, string number) {
+            public static object parse(string name, string number) {
                 Type type = map[name];
                 System.Collections.Generic.IEnumerable<MethodInfo> methods = type.GetMethods().
                 Where(x => x.Name == "Parse");
