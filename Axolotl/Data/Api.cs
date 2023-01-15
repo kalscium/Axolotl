@@ -14,6 +14,7 @@ namespace axoapi
             this.switches = (List<string>) data[1];
             this.values = (List<dynamic>) data[2];
             this.order = (List<byte>) data[3];
+            this.sign = (string) data[4];
         }
 
         public string advance() {
