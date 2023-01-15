@@ -2,8 +2,8 @@ namespace parser
 {
     public class LexResult {
         public Error error = null;
-        public dynamic tok = null;
-        public dynamic cache = null;
+        public object tok = null;
+        public object cache = null;
         public bool found = false;
 
         public object register(LexResult res) {
@@ -12,12 +12,12 @@ namespace parser
             return res.tok;
         }
 
-        public LexResult success(dynamic node) {
+        public LexResult success(object node) {
             this.tok = node;
             return this;
         }
 
-        public LexResult success(dynamic node, dynamic cache) {
+        public LexResult success(object node, object cache) {
             this.tok = node;
             this.cache = cache;
             return this;

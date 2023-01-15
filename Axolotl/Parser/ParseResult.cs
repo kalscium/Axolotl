@@ -3,20 +3,20 @@ namespace parser
     public class ParseResult {
         // Static
         public Error error = null;
-        public dynamic node = null;
+        public object node = null;
         public uint advanceCount = 0;
 
-        public void registerAdvance(dynamic advance) {
+        public void registerAdvance(object advance) {
             this.advanceCount++;
         }
 
-        public dynamic register(ParseResult res) {
+        public object register(ParseResult res) {
             this.advanceCount += res.advanceCount;
             if (res.error is not null) this.error = res.error;
             return res.node;
         }
 
-        public ParseResult success(dynamic node) {
+        public ParseResult success(object node) {
             this.node = node;
             return this;
         }

@@ -7,7 +7,7 @@ namespace data
         public List<string> cmds {get;}
         public List<string> switches {get;}
         public List<dynamic> values {get;}
-        public List<ushort> order {get;}
+        public List<byte> order {get;}
         public string sign {get;}
 
         public Interpackage(User user, string password, Argument arg) {
@@ -18,10 +18,10 @@ namespace data
             this.values = arg.values;
             this.order = arg.order;
 
-            this.sign = Interpackage.getSign(this.user, password, cmds[0]);
+            this.sign = Interpackage.getSign(password, cmds[0]);
         }
 
-        public Interpackage(List<ushort> order, List<string> switches, List<dynamic> values) {
+        public Interpackage(List<byte> order, List<string> switches, List<dynamic> values) {
             this.switches = switches;
             this.values = values;
             this.order = order;
@@ -32,6 +32,16 @@ namespace data
             string cmd = this.cmds[0];
             this.cmds.RemoveAt(0);
             return cmd;
+        }
+
+        public object[] compile() {
+            return new object[] {
+                this.cmds,
+                this.switches,
+                this.values,
+                this.order,
+                this.sign,
+            };
         }
 
         // 'Dictionary Run' should not be used in interpackage
@@ -61,8 +71,7 @@ namespace data
                 return null;
             }
 
-            SeraLib.SeraBall.flush();
-            result.GetMethod("entry").Invoke(null, new object[] {this.seralib().compile()});
+            result.GetMethod("entry").Invoke(null, new object[] {this.compile()});
 
             return null;
         }
@@ -93,45 +102,13 @@ namespace data
             } throw new Exception("[Axolotl Bin] Error: Cannot find entry point for program");
         }
 
-        public static string getSign(User user, string password, string cmd) {
-            string compUsr = user.seralib().compile();
-            string contents = new SeraLib.SeraGenerics.List(new List<dynamic> {compUsr, cmd}).seralib().compile();
-            string result = encryption.TwoWay.Encrypt(contents, password);
-
-            return result;
-        }
+        public static string getSign(string password, string cmd) => encryption.TwoWay.Encrypt(cmd, password);
 
         public static List<T2> listTo<T, T2>(List<T> list) {
             List<T2> result = new List<T2>();
             for (int i = 0; i < list.Count; i++) {
                 result.Add((dynamic) list[i]);
             } return result;
-        }
-
-        /////////////////////
-        // SeraLib Stuff
-        /////////////////////
-
-        public static uint address = 1003;
-
-        public Interpackage(SeraLib.SeraData data) {
-            this.user = data.data[0];
-            this.cmds = listTo<dynamic, string>(data.data[1]);
-            this.switches = listTo<dynamic, string>(data.data[2]);
-            this.values = data.data[3];
-            this.order = listTo<dynamic, ushort>(data.data[4]);
-            this.sign = data.data[5];
-        }
-
-        public SeraLib.SeraBall seralib() {
-            return new SeraLib.SeraBall(this) {
-                this.user,
-                listTo<string, dynamic>(this.cmds),
-                listTo<string, dynamic>(this.switches),
-                this.values,
-                listTo<ushort, dynamic>(this.order),
-                this.sign,
-            };
         }
     }
 }

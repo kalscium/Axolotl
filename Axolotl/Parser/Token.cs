@@ -14,14 +14,14 @@ namespace parser
 
         // Dynamic
         public string type;
-        public dynamic value;
+        public object value;
 
-        public Token(string type, dynamic value=null) {
+        public Token(string type, object value=null) {
             this.type = type;
             this.value = value;
         }
 
-        public bool matches(string type, dynamic value) {
+        public bool matches(string type, object value) {
             return this.type == type && this.value.Equals(value);
         }
 
@@ -44,7 +44,7 @@ namespace parser
                 if (res.error is not null) return res;
 
                 tokenList.Add(tok);
-                if (res.cache is not null) tokenList.Add(res.cache);
+                if (res.cache is not null) tokenList.Add((Token) res.cache);
 
                 return res;
             } return new LexResult();

@@ -1,7 +1,7 @@
 namespace parser
 {
     public static class Interpreter {
-        public static RTResult visit(dynamic node) {
+        public static RTResult visit(object node) {
             string methodName = $"visit_{node.GetType().Name}";
             RTResult res = (RTResult) typeof(Interpreter).GetMethod(methodName).Invoke(null, new object[] {node});
             return res;
@@ -28,13 +28,13 @@ namespace parser
             List<string> cmds;
 
             if (node.sub is null) {
-                cmds = new List<string>() {node.main.value};
+                cmds = new List<string>() {(string) ((Token) node.main).value};
             } else if (node.main is Token) {
-                cmds = new List<string>() {node.main.value};
-                cmds.Add(node.sub.value);
+                cmds = new List<string>() {(string) ((Token) node.main).value};
+                cmds.Add((string) node.sub.value);
             } else {
-                cmds = res.register(Interpreter.visit_GetNode(node.main));
-                cmds.Add(node.sub.value);
+                cmds = (List<string>) res.register(Interpreter.visit_GetNode((GetNode) node.main));
+                cmds.Add((string) node.sub.value);
             } return res.success(cmds);
         }
 
@@ -47,17 +47,17 @@ namespace parser
         public static RTResult visit_ArgsNode(ArgsNode node) {
             RTResult res = new RTResult();
             List<string> switches = new List<string>();
-            List<dynamic> values = new List<dynamic>();
-            List<UInt16> order = new List<UInt16>();
+            List<object> values = new List<object>();
+            List<byte> order = new List<byte>();
 
             for (int i = 0; i < node.args.Count; i++) {
-                dynamic arg = node.args[i];
+                object arg = node.args[i];
                 if (arg is SwitchNode) {
-                    string swtch = res.register(Interpreter.visit_SwitchNode(arg));
+                    string swtch = (string) res.register(Interpreter.visit_SwitchNode((SwitchNode) arg));
                     switches.Add(swtch);
                     order.Add(1);
                 } else {
-                    dynamic val = res.register(Interpreter.visit(arg));
+                    object val = res.register(Interpreter.visit(arg));
                     values.Add(val);
                     order.Add(0);
                 }
@@ -67,8 +67,8 @@ namespace parser
         public static RTResult visit_ExprNode(ExprNode node) {
             RTResult res = new RTResult();
 
-            List<string> cmds = res.register(Interpreter.visit_GetNode(node.getNode));
-            data.Argument argument = res.register(Interpreter.visit_ArgsNode(node.argsNode));
+            List<string> cmds = (List<string>) res.register(Interpreter.visit_GetNode(node.getNode));
+            data.Argument argument = (data.Argument) res.register(Interpreter.visit_ArgsNode(node.argsNode));
             argument.cmds = cmds;
 
             return res.success(argument);
@@ -78,7 +78,7 @@ namespace parser
             RTResult res = new RTResult();
             List<data.Argument> result = new List<data.Argument>();
             for (int i = 0; i < node.elementNodes.Count; i++) {
-                data.Argument arg = res.register(Interpreter.visit_ExprNode(node.elementNodes[i]));
+                data.Argument arg = (data.Argument) res.register(Interpreter.visit_ExprNode((ExprNode) node.elementNodes[i]));
                 result.Add(arg);
             } return res.success(result);
         }

@@ -26,7 +26,7 @@ namespace parser
 
     public class SwitchNode {
         public Token tok;
-        public dynamic value;
+        public object value;
 
         public SwitchNode(Token tok) {
             this.tok = tok;
@@ -39,31 +39,32 @@ namespace parser
     }
 
     public class ArgsNode {
-        public List<dynamic> args;
+        public List<object> args;
 
-        public ArgsNode(List<dynamic> args) {
+        public ArgsNode(List<object> args) {
             this.args = args;
         }
 
         public string repr() {
             string result = "";
             for (int i = 0; i < args.Count; i++) {
-                result += " " + this.args[i].repr();
+                result += " " + this.args[i].GetType().GetMethod("repr").Invoke(this.args[i], new object[0]);
             } return result;
         }
     }
 
     public class GetNode {
-        public dynamic main;
+        public object main;
         public Token sub;
 
-        public GetNode(dynamic main, Token sub) {
+        public GetNode(object main, Token sub) {
             this.main = main;
             this.sub = sub;
         }
 
         public string repr() {
-            return this.sub is null ? this.main.repr(): $"{this.main.repr()}.{this.sub.repr()}";
+            string main = (string) this.main.GetType().GetMethod("repr").Invoke(this.main, new object[0]);
+            return this.sub is null ? main: $"{main}.{this.sub.repr()}";
         }
     }
 
@@ -82,16 +83,16 @@ namespace parser
     }
 
     public class IterNode {
-        public List<dynamic> elementNodes;
+        public List<object> elementNodes;
 
-        public IterNode(List<dynamic> elementNodes) {
+        public IterNode(List<object> elementNodes) {
             this.elementNodes = elementNodes;
         }
 
         public string repr() {
-            string result = elementNodes[0].repr();
+            string result = (string) elementNodes[0].GetType().GetMethod("repr").Invoke(elementNodes[0], new object[0]);
             for (int i = 1; i < elementNodes.Count; i++) {
-                result += $"; {elementNodes[i].repr()}";
+                result += $"; {(string) elementNodes[i].GetType().GetMethod("repr").Invoke(elementNodes[i], new object[0])}";
             } return result;
         }
     }

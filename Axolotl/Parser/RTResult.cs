@@ -1,7 +1,7 @@
 namespace parser
 {
     public class RTResult {
-        public dynamic value;
+        public object value;
         public Error error;
 
         public RTResult() {
@@ -13,12 +13,12 @@ namespace parser
             this.error = null;
         }
 
-        public dynamic register(RTResult res) {
+        public object register(RTResult res) {
             if (res.error is not null) return res;
             return res.value;
         }
 
-        public RTResult success(dynamic value) {
+        public RTResult success(object value) {
             this.reset();
             this.value = value;
             return this;

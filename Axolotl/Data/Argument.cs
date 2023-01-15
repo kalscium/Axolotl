@@ -3,10 +3,10 @@ namespace data
     public class Argument {
         public List<string> cmds;
         public List<string> switches;
-        public List<dynamic> values;
-        public List<ushort> order;
+        public List<object> values;
+        public List<byte> order;
 
-        public Argument(List<ushort> order, List<string> switches, List<dynamic> values) {
+        public Argument(List<byte> order, List<string> switches, List<object> values) {
             this.order = order;
             this.switches = switches;
             this.values = values;

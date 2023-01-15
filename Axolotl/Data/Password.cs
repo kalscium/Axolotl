@@ -1,8 +1,8 @@
 namespace data
 {
     public class Password {
-        public string hash {get;}
-        public string salt {get;}
+        public string hash;
+        public string salt;
 
         public Password(string hash, string salt) {
             this.hash = hash;
@@ -14,6 +14,8 @@ namespace data
             this.hash = result[0];
             this.salt = result[1];
         }
+
+        public Password(SeraDB.Entry entry) {}
 
         public bool verify(string password) {
             string[] hash = encryption.PassHashing.hash(password, Convert.FromBase64String(this.salt));
@@ -41,22 +43,17 @@ namespace data
             return password;
         }
 
-        /////////////////////
-        // SeraLib Stuff
-        /////////////////////
-
-        public static uint address = 1002;
-
-        public Password(SeraLib.SeraData data) {
-            this.hash = data.data[0];
-            this.salt = data.data[1];
-        }
-
-        public SeraLib.SeraBall seralib() {
-            return new SeraLib.SeraBall(this) {
-                this.hash,
-                this.salt,
-            };
+        public object SeraDB {
+            get {
+                return new object[] {
+                    this.hash,
+                    this.salt,
+                };
+            } set {
+                object[] list = (object[]) value;
+                this.hash = (string) list[0];
+                this.salt = (string) list[1];
+            }
         }
     }
 }

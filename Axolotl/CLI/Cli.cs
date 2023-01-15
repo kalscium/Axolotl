@@ -4,7 +4,7 @@ namespace cli
 {
     public class Cli {   
         public static string banner = " $$$$$$\\                      $$\\            $$\\     $$\\ \n$$  __$$\\                     $$ |           $$ |    $$ |\n$$ /  $$ |$$\\   $$\\  $$$$$$\\  $$ | $$$$$$\\ $$$$$$\\   $$ |\n$$$$$$$$ |\\$$\\ $$  |$$  __$$\\ $$ |$$  __$$\\\\_$$  _|  $$ |\n$$  __$$ | \\$$$$  / $$ /  $$ |$$ |$$ /  $$ | $$ |    $$ |\n$$ |  $$ | $$  $$<  $$ |  $$ |$$ |$$ |  $$ | $$ |$$\\ $$ |\n$$ |  $$ |$$  /\\$$\\ \\$$$$$$  |$$ |\\$$$$$$  | \\$$$$  |$$ |\n\\__|  \\__|\\__/  \\__| \\______/ \\__| \\______/   \\____/ \\__|";
-        public static string version = "2.1.0";
+        public static string version = "3.1.0";
 
         public User user;
         public Interpackage interPackage;
@@ -58,11 +58,11 @@ namespace cli
             parser.LexResult lres = lexer.makeTokens();
             if (lres.error is not null) {System.Console.WriteLine(lres.error.repr()); return null;}
 
-            parser.Parser parse = new parser.Parser(lres.tok);
+            parser.Parser parse = new parser.Parser((List<parser.Token>) lres.tok);
             parser.ParseResult pres = parse.parse();
             if (pres.error is not null) {System.Console.WriteLine(pres.error.repr()); return null;}
 
-            List<Argument> args = parser.Interpreter.visit_IterNode(pres.node).value;
+            List<Argument> args = (List<Argument>) parser.Interpreter.visit_IterNode((parser.IterNode) pres.node).value;
             return args;
         }
 
@@ -84,12 +84,10 @@ namespace cli
             System.Console.WriteLine("=== Login ===");
             string username = ask("Username");
             string password = Password.passAsk("Password");
-            UserCol userCol = Compiler.parse(Path.Combine(this.env, "usr.slo"));
+            UserCol userCol = new UserCol(Path.Combine(this.env, "usr.sldb"));
             System.Console.WriteLine();
 
-            this.user = userCol.getusr(username, password);
-
-            if (this.user is null) {
+            if (!userCol.getusr(username, password, out this.user)) {
                 log("Error: Username or password incorrect!");
                 System.Console.WriteLine();
                 return this.login();

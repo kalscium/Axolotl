@@ -13,11 +13,11 @@ namespace parser
             this.advance();
         }
 
-        public dynamic advance() {
+        public byte advance() {
             this.tokIdx++;
             if (this.tokIdx < this.tokens.Count) {
                 this.currentTok = this.tokens[this.tokIdx];
-            } return null;
+            } return 1;
         }
 
         public ParseResult parse() {
@@ -38,7 +38,7 @@ namespace parser
 
         public ParseResult iterExpr() {
             ParseResult res = new ParseResult();
-            List<dynamic> elementNodes = new List<dynamic>();
+            List<object> elementNodes = new List<object>();
             
             elementNodes.Add(res.register(this.expr()));
             if (res.error is not null) return res;
@@ -59,14 +59,14 @@ namespace parser
         public ParseResult expr() {
             ParseResult res = new ParseResult();
 
-            dynamic get = res.register(this.get());
+            object get = res.register(this.get());
             if (res.error is not null) return res;
             if (get is Token) get = new GetNode(get, null);
 
-            ArgsNode args = res.register(this.args());
+            ArgsNode args = (ArgsNode) res.register(this.args());
             if (res.error is not null) return res;
 
-            return res.success(new ExprNode(get, args));
+            return res.success(new ExprNode((GetNode) get, args));
         }
 
         public ParseResult get() {
@@ -77,7 +77,7 @@ namespace parser
                     Error.InvalidSyntaxError,
                     ErrorMsg.ISE002
                 ));
-            } dynamic main = this.currentTok;
+            } object main = this.currentTok;
 
             res.registerAdvance(this.advance());
 
@@ -91,7 +91,7 @@ namespace parser
 
         public ParseResult args() {
             ParseResult res = new ParseResult();
-            List<dynamic> args = new List<dynamic>();
+            List<object> args = new List<object>();
             bool isArg = true;
 
             while (isArg) {
@@ -120,9 +120,9 @@ namespace parser
 
             if (this.currentTok.type == Token.DASH) {
                 res.registerAdvance(this.advance());
-                dynamic atom = res.register(this.atom());
+                object atom = res.register(this.atom());
                 if (res.error is not null) return res;
-                return res.success(new SwitchNode(atom.tok));
+                return res.success(new SwitchNode((Token) atom.GetType().GetField("tok").GetValue(atom)));
             }
 
             if (tok is null) return res.failure(new Error(

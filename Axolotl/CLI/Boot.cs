@@ -37,7 +37,7 @@ namespace cli
                 Directory.CreateDirectory(Path.Combine(this.env, "bin"));
             } log("Loaded Bin Directory!");
 
-            if (!File.Exists(Path.Combine(this.env, "usr.slo"))) {
+            if (!File.Exists(Path.Combine(this.env, "usr.sldb"))) {
                 log("Error: No users found!");
                 log("Performing installation...");
                 Install install = new Install(this.env);
@@ -47,7 +47,7 @@ namespace cli
             }
 
             try {
-                data.Compiler.parse(Path.Combine(this.env, "usr.slo"));
+                SeraDB.DataBase.load(Path.Combine(this.env, "usr.sldb")).search("__init__");
                 log("Loaded avalible users!");
             } catch {
                 log("Error: Users corrupt!");

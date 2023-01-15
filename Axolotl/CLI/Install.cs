@@ -16,8 +16,7 @@ namespace cli
 
         public void createUsrCol() {
             log("Creating User Collection...");
-            data.UserCol userCol = new data.UserCol();
-            data.Compiler.compile(Path.Combine(this.env, "usr.slo"), userCol);
+            data.UserCol.init(Path.Combine(this.env, "usr.sldb"));
             log("Created User Collection!");
         }
 
@@ -25,9 +24,8 @@ namespace cli
             log("Creating User...");
             CreateUsr createUsr = new CreateUsr();
             createUsr.gather();
-            data.UserCol userCol = data.Compiler.parse(Path.Combine(this.env, "usr.slo"));
-            userCol.list.Add(createUsr.user);
-            data.Compiler.compile(Path.Combine(this.env, "usr.slo"), userCol);
+            data.UserCol userCol = new data.UserCol(Path.Combine(this.env, "usr.sldb"));
+            userCol.database.append(createUsr.user.username, createUsr.user);
             log("Created User!");
         }
 
