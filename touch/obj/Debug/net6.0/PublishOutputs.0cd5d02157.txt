@@ -1,0 +1,5 @@
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/bin/Debug/net6.0/publish/touch
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/bin/Debug/net6.0/publish/touch.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/bin/Debug/net6.0/publish/touch.deps.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/bin/Debug/net6.0/publish/touch.runtimeconfig.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/bin/Debug/net6.0/publish/touch.pdb

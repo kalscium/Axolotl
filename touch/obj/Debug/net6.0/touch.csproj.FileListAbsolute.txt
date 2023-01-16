@@ -1,0 +1,15 @@
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/bin/Debug/net6.0/touch
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/bin/Debug/net6.0/touch.deps.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/bin/Debug/net6.0/touch.runtimeconfig.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/bin/Debug/net6.0/touch.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/bin/Debug/net6.0/touch.pdb
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/obj/Debug/net6.0/touch.csproj.AssemblyReference.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/obj/Debug/net6.0/touch.GeneratedMSBuildEditorConfig.editorconfig
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/obj/Debug/net6.0/touch.AssemblyInfoInputs.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/obj/Debug/net6.0/touch.AssemblyInfo.cs
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/obj/Debug/net6.0/touch.csproj.CoreCompileInputs.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/obj/Debug/net6.0/touch.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/obj/Debug/net6.0/refint/touch.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/obj/Debug/net6.0/touch.pdb
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/obj/Debug/net6.0/touch.genruntimeconfig.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/touch/obj/Debug/net6.0/ref/touch.dll
