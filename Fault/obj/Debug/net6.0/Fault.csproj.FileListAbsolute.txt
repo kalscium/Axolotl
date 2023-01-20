@@ -1,0 +1,15 @@
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/bin/Debug/net6.0/Fault
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/bin/Debug/net6.0/Fault.deps.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/bin/Debug/net6.0/Fault.runtimeconfig.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/bin/Debug/net6.0/Fault.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/bin/Debug/net6.0/Fault.pdb
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/obj/Debug/net6.0/Fault.csproj.AssemblyReference.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/obj/Debug/net6.0/Fault.GeneratedMSBuildEditorConfig.editorconfig
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/obj/Debug/net6.0/Fault.AssemblyInfoInputs.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/obj/Debug/net6.0/Fault.AssemblyInfo.cs
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/obj/Debug/net6.0/Fault.csproj.CoreCompileInputs.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/obj/Debug/net6.0/Fault.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/obj/Debug/net6.0/refint/Fault.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/obj/Debug/net6.0/Fault.pdb
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/obj/Debug/net6.0/Fault.genruntimeconfig.cache
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/obj/Debug/net6.0/ref/Fault.dll
