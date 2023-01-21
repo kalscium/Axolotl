@@ -2,13 +2,13 @@ using System.Text;
 
 namespace front
 {
-    public class Cli {
+    public class Front {
         public List<StringBuilder> text;
         public int[] pos = {2, 0};
         public int offset = 0;
         public List<int[]> map;
 
-        public Cli(string str) {
+        public Front(string str) {
             string[] lines = str.Split('\n');
             this.text = new List<StringBuilder>();
 
@@ -32,7 +32,7 @@ namespace front
         }
 
         public static class Edit {
-            public static byte edit(Cli cli, char key) {
+            public static byte edit(Front cli, char key) {
                 if (store(cli, key) == 1) return 0;
                 cli.map[cli.pos[1]][0]++;
 
@@ -43,7 +43,7 @@ namespace front
                 return 0;
             }
 
-            public static byte backspace(Cli cli) {
+            public static byte backspace(Front cli) {
                 (int line, int idx) = point(cli);
                 if (idx == 0) return renter(cli);
 
@@ -62,7 +62,7 @@ namespace front
                 return 0;
             }
 
-            public static byte renter(Cli cli) {
+            public static byte renter(Front cli) {
                 int line = cli.map[cli.pos[1]][1];
                 if (line == 0) return 1;
                 if (cli.pos[1] == 0) {cli.offset--; cli.map = Print.print(cli.text, cli.offset); cli.pos[1]++;}
@@ -78,7 +78,7 @@ namespace front
                 return 0;
             }
 
-            public static byte enter(Cli cli) {
+            public static byte enter(Front cli) {
                 (int line, int idx) = point(cli);
 
                 cli.text.Insert(line + 1, new StringBuilder(cli.text[line].ToString(idx, cli.text[line].Length - idx)));
@@ -93,7 +93,7 @@ namespace front
                 return 0;
             }
 
-            private static byte store(Cli cli, char key) {
+            private static byte store(Front cli, char key) {
                 (int line, int idx) = point(cli);
                 cli.text[line].Insert(idx, key);
                 if (cli.map[cli.pos[1]][0] > Console.WindowWidth - 2) {
@@ -103,13 +103,13 @@ namespace front
                 } return 0;
             }
 
-            private static (int, int) point(Cli cli) {
+            private static (int, int) point(Front cli) {
                 int line = cli.map[cli.pos[1]][1];
                 int idx = cli.map[cli.pos[1]][2] + cli.pos[0] - 2;
                 return (line, idx);
             } 
 
-            private static void console(Cli cli) {
+            private static void console(Front cli) {
                 (int line, int idx) = point(cli);
 
                 for (int i = idx; i < cli.text[line].Length; i++) {
@@ -119,7 +119,7 @@ namespace front
         }
 
         public static class Move {
-            public static byte move(ConsoleKeyInfo key, Cli cli) {
+            public static byte move(ConsoleKeyInfo key, Front cli) {
                 int booster = key.Modifiers == ConsoleModifiers.Control ? 1: 0;
 
                 if (key.Key == ConsoleKey.UpArrow) safeGo(1 + booster, false, cli);
@@ -129,16 +129,16 @@ namespace front
                 return 0;
             }
 
-            public static void go(Cli cli, int i=0) => Console.SetCursorPosition(cli.pos[0], cli.pos[1]);
+            public static void go(Front cli, int i=0) => Console.SetCursorPosition(cli.pos[0], cli.pos[1]);
 
-            public static void safeGo(int change, bool isX, Cli cli) {
+            public static void safeGo(int change, bool isX, Front cli) {
                 if (isX) cli.pos[0] += change;
                 else cli.pos[1] -= change;
                 mkValid(cli);
                 go(cli);
             }
 
-            public static void mkValid(Cli cli) {
+            public static void mkValid(Front cli) {
                 if (cli.pos[1] < 0) if (cli.offset > 0) {cli.offset--; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = 0;}
                 else cli.pos[1] = 0;
                 else if (cli.pos[1] >= cli.map.Count) if (cli.offset < cli.text.Count - 1) {cli.offset++; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = cli.map.Count - 1;}
@@ -147,13 +147,13 @@ namespace front
                 if (cli.pos[0] < 2 && cli.map[cli.pos[1]][2] > 0) {cli.pos[0] = 2; safeGo(1, false, cli); cli.pos[0] = cli.map[cli.pos[1]][0];}
                 else if (cli.pos[0] < 2 && cli.map[cli.pos[1]][1] != 0) {cli.pos[0] = Console.WindowWidth; safeGo(1, false, cli);}
                 else if (cli.pos[0] < 2) cli.pos[0] = 2;
-                else if (cli.pos[0] == cli.map[cli.pos[1]][0] + 3) {cli.pos[0] = 2; safeGo(-1, false, cli);}
+                else if (cli.pos[0] == cli.map[cli.pos[1]][0] + 3 && cli.map[cli.pos[1]][1] != cli.text.Count - 1) {cli.pos[0] = 2; safeGo(-1, false, cli);}
                 else if (cli.pos[0] >= cli.map[cli.pos[1]][0] + 3) cli.pos[0] = cli.map[cli.pos[1]][0] + 2;
-                else if (cli.pos[0] == Console.WindowWidth) {cli.pos[0] = 2; safeGo(-1, false, cli);}
+                else if (cli.pos[0] == Console.WindowWidth && cli.map[cli.pos[1]][1] != cli.text.Count - 1) {cli.pos[0] = 2; safeGo(-1, false, cli);}
                 else if (cli.pos[0] >= Console.WindowWidth) cli.pos[0] = Console.WindowWidth - 1;
             }
 
-            public static bool isValid(int pos, bool isX, Cli cli) {
+            public static bool isValid(int pos, bool isX, Front cli) {
                 if (isX) {
                     if (pos < 2) return false;
                     if (pos >= cli.map[cli.pos[1]][0] + 3) return false;
@@ -164,6 +164,86 @@ namespace front
                     if (pos >= Console.WindowHeight) return false;
                 } return true;
             }
+        }
+    }
+
+    public class Print {
+        public string text;
+
+        public Print(string text) {
+            this.text = text;
+        }
+
+        public static List<int[]> print(List<System.Text.StringBuilder> text, int offset) {
+            Console.Clear();
+            int x = Console.WindowWidth;
+            int y = Console.WindowHeight - 1;
+            List<int[]> lines = new List<int[]>();
+            int ln = 0;
+
+            for (int i = offset; ln < y && i < text.Count; i++) {
+                string[] result = line(text[i].ToString(), ref ln, x - 2, i, ref lines, 0).Split('\n');
+
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write($"{Base85Encode(i + 1)}|");
+                Console.ResetColor();
+                System.Console.WriteLine(result[0]);
+
+                for (int a = 1; a < result.Length; a++) {
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.Write(" |");
+                    Console.ResetColor();
+                    System.Console.WriteLine(result[a]);
+                }
+            }
+
+            while (ln < y) {
+                ln++;
+                Console.ForegroundColor = ConsoleColor.Blue;
+                System.Console.WriteLine('~');
+                Console.ResetColor();
+            }
+            
+            return lines;
+        }
+
+        private static string line(string str, ref int ln, int x, int i, ref List<int[]> lines, int idx, bool num=true) {
+            ln++;
+            x -= 2;
+            lines.Add(new int[3]);
+            int lin = lines.Count - 1; // Replacement word for line
+
+            string result = "";
+            bool longer = false;
+
+            if (str.Length <= x + 2) result = str;
+            else {
+                result = $"{new string(str.ToCharArray(0, x + 2))}\n";
+                longer = true;
+            }
+            
+            lines[lin][0] = result.Length;
+            lines[lin][1] = i;
+            lines[lin][2] = idx;
+            idx += result.Length - 1;
+
+            if (longer) result += line(new string(str.Skip(x + 2).ToArray()), ref ln, x + 2, i, ref lines, idx, false);
+
+            return result;
+        }
+
+        private static string Base85Encode(int num)
+        {
+            char[] base85chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~".ToCharArray();
+            var base85 = new char[5];
+            int i = 4;
+            while (num > 0)
+            {
+                int remainder = num % 85;
+                base85[i--] = base85chars[remainder];
+                num = num / 85;
+            }
+            return new string(base85);
         }
     }
 }
