@@ -15,12 +15,24 @@ namespace front
             int ln = 0;
 
             for (int i = offset; ln < y && i < text.Count; i++) {
-                System.Console.WriteLine(line(text[i].ToString(), ref ln, x - 2, i + 1, ref lines, 0, 0));
+                string[] result = line(text[i].ToString(), ref ln, x - 2, i, ref lines, 0).Split('\n');
+
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write($"{Base64Encode(i + 1)}|");
+                Console.ResetColor();
+                System.Console.WriteLine(result[0]);
+
+                for (int a = 1; a < result.Length; a++) {
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.Write(" |");
+                    Console.ResetColor();
+                    System.Console.WriteLine(result[a]);
+                }
             }
 
             while (ln < y) {
                 ln++;
-                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.ForegroundColor = ConsoleColor.Blue;
                 System.Console.WriteLine('~');
                 Console.ResetColor();
             }
@@ -28,42 +40,34 @@ namespace front
             return lines;
         }
 
-        private static string line(string str, ref int ln, int x, int i, ref List<int[]> lines, int idx, int before, bool num=true) {
+        private static string line(string str, ref int ln, int x, int i, ref List<int[]> lines, int idx, bool num=true) {
             ln++;
             x -= 2;
-            lines.Add(new int[4]);
+            lines.Add(new int[3]);
             int lin = lines.Count - 1; // Replacement word for line
-
-            if (num) {
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.Write($"{Base64Encode(i)} ");
-                Console.ResetColor();
-            }
 
             string result = "";
             bool longer = false;
 
-            if (str.Length <= x) result = (num ? "": "- ") + str;
+            if (str.Length <= x + 2) result = str;
             else {
-                result = (num ? "": "- ") + $"{new string(str.ToCharArray(0, x + 2))}\n";
+                result = $"{new string(str.ToCharArray(0, x + 2))}\n";
                 longer = true;
             }
             
-            lines[lin][0] = num ? result.Length: result.Length - 2;
-            lines[lin][1] = i - 1;
+            lines[lin][0] = result.Length;
+            lines[lin][1] = i;
             lines[lin][2] = idx;
-            lines[lin][3] = before;
-            idx += lines[lin][0];
-            before++;
+            idx += result.Length - 1;
 
-            if (longer) result += line(new string(str.Skip(x + 2).ToArray()), ref ln, x, i, ref lines, idx, before, false);
+            if (longer) result += line(new string(str.Skip(x + 2).ToArray()), ref ln, x + 2, i, ref lines, idx, false);
 
             return result;
         }
 
         private static string Base64Encode(int num)
         {
-            char[] base64chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/[]|<>!@#$%^&*()-=+".ToCharArray();
+            char[] base64chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/".ToCharArray();
             var base64 = new char[(int)Math.Ceiling(Math.Log(num + 1, 64))];
             int i = base64.Length - 1;
             while (num > 0)

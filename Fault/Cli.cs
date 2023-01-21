@@ -23,55 +23,109 @@ namespace front
         public void split() {
             ConsoleKeyInfo key = Console.ReadKey(true);
             byte suc = key.Key switch {
-                ConsoleKey i when new ConsoleKey[] {ConsoleKey.UpArrow, ConsoleKey.DownArrow, ConsoleKey.LeftArrow, ConsoleKey.RightArrow}.Contains(i) => Move.move(i, this),
-                ConsoleKey.CrSel => 0,
+                ConsoleKey i when new ConsoleKey[] {ConsoleKey.UpArrow, ConsoleKey.DownArrow, ConsoleKey.LeftArrow, ConsoleKey.RightArrow}.Contains(i) => Move.move(key, this),
+                ConsoleKey i when key.Modifiers == ConsoleModifiers.Control && i == ConsoleKey.S => 0,
+                ConsoleKey.Backspace => Edit.backspace(this),
+                ConsoleKey.Enter => Edit.enter(this),
                 _ => Edit.edit(this, key.KeyChar),
             };
         }
 
         public static class Edit {
             public static byte edit(Cli cli, char key) {
-                store(cli, key);
+                if (store(cli, key) == 1) return 0;
                 cli.map[cli.pos[1]][0]++;
 
-                console(cli, key);
+                console(cli);
                 cli.pos[0]++;
 
                 Move.go(cli);
                 return 0;
             }
 
-            private static void store(Cli cli, char key) {
-                int line = cli.map[cli.pos[1]][1];
-                int idx = cli.map[cli.pos[1]][2] + cli.pos[0] - 2 - cli.map[cli.pos[1]][3];
-                cli.text[line].Insert(idx, key);
-                File.AppendAllText("lines.log", cli.text[line].ToString() + "\n");
+            public static byte backspace(Cli cli) {
+                (int line, int idx) = point(cli);
+                if (idx == 0) return renter(cli);
+
+                cli.text[line].Remove(idx - 1, 1);
+
+                cli.pos[0]--;
+                Move.go(cli);
+
+                if (cli.map[cli.pos[1]][0] > Console.WindowWidth - 2) {
+                    cli.map = Print.print(cli.text, cli.offset);
+                } else {
+                    console(cli);
+                    Console.Write(' ');
+                    cli.map[cli.pos[1]][0]--;
+                } Move.go(cli);
+                return 0;
             }
 
-            private static void console(Cli cli, char key) {
-                Console.SetCursorPosition(2, cli.pos[1]);
+            public static byte renter(Cli cli) {
                 int line = cli.map[cli.pos[1]][1];
-                int idx = cli.map[cli.pos[1]][2];
-                string text = new string(cli.text[line].ToString().Skip(idx).ToArray());
+                if (line == 0) return 1;
+                if (cli.pos[1] == 0) {cli.offset--; cli.map = Print.print(cli.text, cli.offset); cli.pos[1]++;}
 
-                Console.Write(text);
+                cli.text[line - 1].Append(cli.text[line]);
+                cli.text.RemoveAt(line);
 
-                // int line = cli.map[cli.pos[1]][1];
-                // int idx = cli.map[cli.pos[1]][2] + cli.pos[0] - 2;
-                // int cap = cli.map[cli.pos[1]][0];
+                cli.pos[1]--;
+                cli.pos[0] = cli.map[cli.pos[1]][0] + 2;
+                cli.map = Print.print(cli.text, cli.offset);
+                Move.go(cli);
 
-                // for (int i = idx; i < cap; i++) {
-                //     Console.Write(cli.text[line][i]);
-                // }
+                return 0;
+            }
+
+            public static byte enter(Cli cli) {
+                (int line, int idx) = point(cli);
+
+                cli.text.Insert(line + 1, new StringBuilder(cli.text[line].ToString(idx, cli.text[line].Length - idx)));
+                cli.text[line].Remove(idx, cli.text[line].Length - idx);
+                cli.pos[0] = cli.text[line + 1].Length;
+                cli.map = Print.print(cli.text, cli.offset);
+
+                cli.pos[0] = 2;
+                Move.go(cli);
+                Move.safeGo(-1, false, cli);
+
+                return 0;
+            }
+
+            private static byte store(Cli cli, char key) {
+                (int line, int idx) = point(cli);
+                cli.text[line].Insert(idx, key);
+                if (cli.map[cli.pos[1]][0] > Console.WindowWidth - 2) {
+                    cli.map = Print.print(cli.text, cli.offset);
+                    Move.safeGo(1, true, cli);
+                    return 1;
+                } return 0;
+            }
+
+            private static (int, int) point(Cli cli) {
+                int line = cli.map[cli.pos[1]][1];
+                int idx = cli.map[cli.pos[1]][2] + cli.pos[0] - 2;
+                return (line, idx);
+            } 
+
+            private static void console(Cli cli) {
+                (int line, int idx) = point(cli);
+
+                for (int i = idx; i < cli.text[line].Length; i++) {
+                    Console.Write(cli.text[line][i]);
+                }
             }
         }
 
         public static class Move {
-            public static byte move(ConsoleKey key, Cli cli) {
-                if (key == ConsoleKey.UpArrow) safeGo(1, false, cli);
-                else if (key == ConsoleKey.DownArrow) safeGo(-1, false, cli);
-                else if (key == ConsoleKey.RightArrow) safeGo(1, true, cli);
-                else if (key == ConsoleKey.LeftArrow) safeGo(-1, true, cli);
+            public static byte move(ConsoleKeyInfo key, Cli cli) {
+                int booster = key.Modifiers == ConsoleModifiers.Control ? 1: 0;
+
+                if (key.Key == ConsoleKey.UpArrow) safeGo(1 + booster, false, cli);
+                else if (key.Key == ConsoleKey.DownArrow) safeGo(-1 - booster, false, cli);
+                else if (key.Key == ConsoleKey.RightArrow) safeGo(1 + booster, true, cli);
+                else if (key.Key == ConsoleKey.LeftArrow) safeGo(-1 - booster, true, cli);
                 return 0;
             }
 
@@ -87,11 +141,15 @@ namespace front
             public static void mkValid(Cli cli) {
                 if (cli.pos[1] < 0) if (cli.offset > 0) {cli.offset--; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = 0;}
                 else cli.pos[1] = 0;
-                else if (cli.pos[1] >= cli.map.Count) if (cli.offset < cli.map.Count - 1) {cli.offset++; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = cli.map.Count - 1;}
+                else if (cli.pos[1] >= cli.map.Count) if (cli.offset < cli.text.Count - 1) {cli.offset++; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = cli.map.Count - 1;}
                 else cli.pos[1] = cli.map.Count - 1;
 
-                if (cli.pos[0] < 2) cli.pos[0] = 2;
+                if (cli.pos[0] < 2 && cli.map[cli.pos[1]][2] > 0) {cli.pos[0] = 2; safeGo(1, false, cli); cli.pos[0] = cli.map[cli.pos[1]][0];}
+                else if (cli.pos[0] < 2 && cli.map[cli.pos[1]][1] != 0) {cli.pos[0] = Console.WindowWidth; safeGo(1, false, cli);}
+                else if (cli.pos[0] < 2) cli.pos[0] = 2;
+                else if (cli.pos[0] == cli.map[cli.pos[1]][0] + 3) {cli.pos[0] = 2; safeGo(-1, false, cli);}
                 else if (cli.pos[0] >= cli.map[cli.pos[1]][0] + 3) cli.pos[0] = cli.map[cli.pos[1]][0] + 2;
+                else if (cli.pos[0] == Console.WindowWidth) {cli.pos[0] = 2; safeGo(-1, false, cli);}
                 else if (cli.pos[0] >= Console.WindowWidth) cli.pos[0] = Console.WindowWidth - 1;
             }
 
