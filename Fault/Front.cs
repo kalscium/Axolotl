@@ -7,6 +7,7 @@ namespace front
         public int[] pos = {2, 0};
         public int offset = 0;
         public List<int[]> map;
+        public string filename = "null";
 
         public Front(string str) {
             string[] lines = str.Split('\n');
@@ -20,11 +21,23 @@ namespace front
             while (true) this.split();
         }
 
+        public Front(string filename, bool exists) {
+            this.filename = filename;
+            if (exists)this.text = back.Store.load(filename, "Entry");
+            else {
+                back.Store.init(filename);
+                this.text = new List<StringBuilder>() {new StringBuilder()};
+            } this.map = Print.print(this.text, offset);
+
+            Move.go(this);
+            while (true) this.split();
+        }
+
         public void split() {
             ConsoleKeyInfo key = Console.ReadKey(true);
             byte suc = key.Key switch {
                 ConsoleKey i when new ConsoleKey[] {ConsoleKey.UpArrow, ConsoleKey.DownArrow, ConsoleKey.LeftArrow, ConsoleKey.RightArrow}.Contains(i) => Move.move(key, this),
-                ConsoleKey i when key.Modifiers == ConsoleModifiers.Control && i == ConsoleKey.S => 0,
+                ConsoleKey i when key.Modifiers == ConsoleModifiers.Control && i == ConsoleKey.S => back.Store.store(this.filename, "Entry", this.text),
                 ConsoleKey.Backspace => Edit.backspace(this),
                 ConsoleKey.Enter => Edit.enter(this),
                 _ => Edit.edit(this, key.KeyChar),
@@ -147,9 +160,9 @@ namespace front
                 if (cli.pos[0] < 2 && cli.map[cli.pos[1]][2] > 0) {cli.pos[0] = 2; safeGo(1, false, cli); cli.pos[0] = cli.map[cli.pos[1]][0];}
                 else if (cli.pos[0] < 2 && cli.map[cli.pos[1]][1] != 0) {cli.pos[0] = Console.WindowWidth; safeGo(1, false, cli);}
                 else if (cli.pos[0] < 2) cli.pos[0] = 2;
-                else if (cli.pos[0] == cli.map[cli.pos[1]][0] + 3 && cli.map[cli.pos[1]][1] != cli.text.Count - 1) {cli.pos[0] = 2; safeGo(-1, false, cli);}
+                else if (cli.pos[0] == cli.map[cli.pos[1]][0] + 3 && !(cli.pos[1] == cli.map.Count - 1 && cli.map[cli.pos[1]][1] != cli.map.Count - 1)) {cli.pos[0] = 2; safeGo(-1, false, cli);}
                 else if (cli.pos[0] >= cli.map[cli.pos[1]][0] + 3) cli.pos[0] = cli.map[cli.pos[1]][0] + 2;
-                else if (cli.pos[0] == Console.WindowWidth && cli.map[cli.pos[1]][1] != cli.text.Count - 1) {cli.pos[0] = 2; safeGo(-1, false, cli);}
+                else if (cli.pos[0] == Console.WindowWidth && !(cli.pos[1] == cli.map.Count - 1 && cli.map[cli.pos[1]][1] != cli.map.Count - 1)) {cli.pos[0] = 2; safeGo(-1, false, cli);}
                 else if (cli.pos[0] >= Console.WindowWidth) cli.pos[0] = Console.WindowWidth - 1;
             }
 
@@ -184,13 +197,13 @@ namespace front
             for (int i = offset; ln < y && i < text.Count; i++) {
                 string[] result = line(text[i].ToString(), ref ln, x - 2, i, ref lines, 0).Split('\n');
 
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write($"{Base85Encode(i + 1)}|");
                 Console.ResetColor();
                 System.Console.WriteLine(result[0]);
 
                 for (int a = 1; a < result.Length; a++) {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write(" |");
                     Console.ResetColor();
                     System.Console.WriteLine(result[a]);
