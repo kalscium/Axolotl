@@ -4,7 +4,7 @@ namespace cli
 {
     public class Cli {   
         public static string banner = " $$$$$$\\                      $$\\            $$\\     $$\\ \n$$  __$$\\                     $$ |           $$ |    $$ |\n$$ /  $$ |$$\\   $$\\  $$$$$$\\  $$ | $$$$$$\\ $$$$$$\\   $$ |\n$$$$$$$$ |\\$$\\ $$  |$$  __$$\\ $$ |$$  __$$\\\\_$$  _|  $$ |\n$$  __$$ | \\$$$$  / $$ /  $$ |$$ |$$ /  $$ | $$ |    $$ |\n$$ |  $$ | $$  $$<  $$ |  $$ |$$ |$$ |  $$ | $$ |$$\\ $$ |\n$$ |  $$ |$$  /\\$$\\ \\$$$$$$  |$$ |\\$$$$$$  | \\$$$$  |$$ |\n\\__|  \\__|\\__/  \\__| \\______/ \\__| \\______/   \\____/ \\__|";
-        public static string version = "3.1.0";
+        public static string version = "3.1.1";
 
         public User user;
         public Interpackage interPackage;
