@@ -123,6 +123,8 @@ namespace front
             } 
 
             private static void console(Front cli) {
+                Console.BackgroundColor = Print.background;
+                Console.ForegroundColor = Print.foreground;
                 (int line, int idx) = point(cli);
 
                 for (int i = idx; i < cli.text[line].Length; i++) {
@@ -181,6 +183,8 @@ namespace front
     }
 
     public class Print {
+        public static ConsoleColor background = ConsoleColor.Black;
+        public static ConsoleColor foreground = ConsoleColor.Gray;
         public string text;
 
         public Print(string text) {
@@ -188,6 +192,7 @@ namespace front
         }
 
         public static List<int[]> print(List<System.Text.StringBuilder> text, int offset) {
+            Console.BackgroundColor = background;
             Console.Clear();
             int x = Console.WindowWidth;
             int y = Console.WindowHeight - 1;
@@ -197,22 +202,23 @@ namespace front
             for (int i = offset; ln < y && i < text.Count; i++) {
                 string[] result = line(text[i].ToString(), ref ln, x - 2, i, ref lines, 0).Split('\n');
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write($"{Base85Encode(i + 1)}|");
-                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"{Base85Encode(i + 1)}\u2502");
+                Console.ForegroundColor = foreground;
                 System.Console.WriteLine(result[0]);
 
                 for (int a = 1; a < result.Length; a++) {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write(" |");
-                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write("-\u2502");
+                    Console.ForegroundColor = foreground;
                     System.Console.WriteLine(result[a]);
                 }
             }
 
             while (ln < y) {
                 ln++;
-                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.BackgroundColor = background;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 System.Console.WriteLine('~');
                 Console.ResetColor();
             }
@@ -222,16 +228,15 @@ namespace front
 
         private static string line(string str, ref int ln, int x, int i, ref List<int[]> lines, int idx, bool num=true) {
             ln++;
-            x -= 2;
             lines.Add(new int[3]);
             int lin = lines.Count - 1; // Replacement word for line
 
             string result = "";
             bool longer = false;
 
-            if (str.Length <= x + 2) result = str;
+            if (str.Length <= x) result = str;
             else {
-                result = $"{new string(str.ToCharArray(0, x + 2))}\n";
+                result = $"{new string(str.ToCharArray(0, x))}\n";
                 longer = true;
             }
             
@@ -240,7 +245,7 @@ namespace front
             lines[lin][2] = idx;
             idx += result.Length - 1;
 
-            if (longer) result += line(new string(str.Skip(x + 2).ToArray()), ref ln, x + 2, i, ref lines, idx, false);
+            if (longer) result += line(new string(str.Skip(x).ToArray()), ref ln, x, i, ref lines, idx, false);
 
             return result;
         }

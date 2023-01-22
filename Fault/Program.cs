@@ -9,8 +9,8 @@ namespace axolotl
         // );
 
         public static void Main(string[] args) {
-            // new front.Front("Hello!\nWelcome to Ethan's Example / Test Story to test out the machanics of this text editor that I have written in c# to act as a front end to my encrypted log taking program utilising axolotl.\n\nThis is bob.\nBob has recently had an accident.\nBob has brain damage.\nThis was bob.\nIntroducing a new and improved Dave!\nDave is much cooler than bob.\nAnd he spends his free time kicking small children and kittens.\nHe is banned from all animal shelters.\nDave's life was ended when he was shot trying to consume all the kangaroos.\nDave was named a hero.\nOh, yeah there is also Stephen.\nNo one cares about Stephen.\nThey always mistake him for his much cooler brother STEVEN.\nStephen is sad.");
-            new front.Front("file.sldb", true);
+            new front.Front("Hello!\nWelcome to Ethan's Example / Test Story to test out the machanics of this text editor that I have written in c# to act as a front end to my encrypted log taking program utilising axolotl.\n\nThis is bob.\nBob has recently had an accident.\nBob has brain damage.\nThis was bob.\nIntroducing a new and improved Dave!\nDave is much cooler than bob.\nAnd he spends his free time kicking small children and kittens.\nHe is banned from all animal shelters.\nDave's life was ended when he was shot trying to consume all the kangaroos.\nDave was named a hero.\nOh, yeah there is also Stephen.\nNo one cares about Stephen.\nThey always mistake him for his much cooler brother STEVEN.\nStephen is sad.");
+            // new front.Front("file.sldb", true);
         }
 
         public static void test() {
