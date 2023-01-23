@@ -21,23 +21,11 @@ namespace front
             while (true) this.split();
         }
 
-        public Front(string filename, bool exists) {
-            this.filename = filename;
-            if (exists)this.text = back.Store.load(filename, "Entry");
-            else {
-                back.Store.init(filename);
-                this.text = new List<StringBuilder>() {new StringBuilder()};
-            } this.map = Print.print(this.text, offset);
-
-            Move.go(this);
-            while (true) this.split();
-        }
-
         public void split() {
             ConsoleKeyInfo key = Console.ReadKey(true);
             byte suc = key.Key switch {
                 ConsoleKey i when new ConsoleKey[] {ConsoleKey.UpArrow, ConsoleKey.DownArrow, ConsoleKey.LeftArrow, ConsoleKey.RightArrow}.Contains(i) => Move.move(key, this),
-                ConsoleKey i when key.Modifiers == ConsoleModifiers.Control && i == ConsoleKey.S => back.Store.store(this.filename, "Entry", this.text),
+                ConsoleKey i when key.Modifiers == ConsoleModifiers.Control && i == ConsoleKey.S => 0,
                 ConsoleKey.Backspace => Edit.backspace(this),
                 ConsoleKey.Enter => Edit.enter(this),
                 _ => Edit.edit(this, key.KeyChar),
