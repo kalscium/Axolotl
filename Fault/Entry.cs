@@ -3,6 +3,7 @@ using System.Text;
 namespace back
 {
     public class Entry {
+        public static string sign = "What the fuck";
         public short index;
         public string title;
         public string description;
@@ -18,10 +19,11 @@ namespace back
         public new string ToString() {
             StringBuilder data = new StringBuilder();
             for (int i = 0; i < this.text.Count; i++) data.AppendLine(this.text[i].ToString());
-            return data.ToString();
+            return encryption.TwoWay.Encrypt(data.ToString(), sign);
         }
 
         public static List<StringBuilder> FromString(string text) {
+            text = encryption.TwoWay.Decrypt(text, sign);
             string[] lines = text.Split('\n');
             List<StringBuilder> res = new List<StringBuilder>();
             for (int i = 0; i < lines.Length - 1; i++) {
