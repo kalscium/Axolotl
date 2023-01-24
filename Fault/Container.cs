@@ -11,26 +11,7 @@ namespace back
             } return null;
         }
 
-        public static string create(DataBase database, string path, Entry entry) {
-            string loc = $"{path}.{(DateTime.Today - new DateTime(DateTime.Today.Year, 1, 1)).Days}";
-            database.append(loc, entry);
-            return loc;
-        }
-
-        public static string create(DataBase database, Entry entry) => create(database, $"{DateTime.Now.Year}.{getTerm()}", entry);
-
-        public static void remove(DataBase database, string path, bool abs=true) {
-            if (abs) {database.remove(path); return;};
-            remove(database, $"{DateTime.Now.Year}.{getTerm()}.{(DateTime.Today - new DateTime(DateTime.Today.Year, 1, 1)).Days}");
-        }
-
-        public static string modify(DataBase database, string path, Entry entry) {
-            string loc  = $"{path}.{(DateTime.Today - new DateTime(DateTime.Today.Year, 1, 1)).Days}";
-            database.modify(loc, entry);
-            return loc;
-        }
-
-        public static string modify(DataBase database, Entry entry) => modify(database, $"{DateTime.Now.Year}.{getTerm()}", entry);
+        public static string path = $"{DateTime.Now.Year}.{getTerm()}.{(DateTime.Today - new DateTime(DateTime.Today.Year, 1, 1)).Days}";
 
         public static string getTerm() {
             DateTime currentDate = DateTime.Now;
@@ -46,19 +27,11 @@ namespace back
             };
         }
 
-        public static string change(DataBase database, Entry entry) {
+        public static void save(DataBase database, Entry entry) {
             try {
-                return modify(database, entry);
+                database.modify(path, entry);
             } catch {
-                return create(database, entry);
-            }
-        }
-
-        public static string change(DataBase database, string path,  Entry entry) {
-            try {
-                return modify(database, entry);
-            } catch {
-                return create(database, entry);
+                database.append(path, entry);
             }
         }
     }
