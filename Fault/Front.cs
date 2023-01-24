@@ -8,7 +8,7 @@ namespace front
         public int offset = 0;
         public List<int[]> map;
         public string filename = "null";
-        public Func<List<StringBuilder>, byte> save;
+        public Func<byte> save;
 
         public Front(string str) {
             string[] lines = str.Split('\n');
@@ -16,15 +16,15 @@ namespace front
 
             for (int i = 0; i < lines.Length; i++) {
                 this.text.Add(new StringBuilder(lines[i]));
-            } this.map = Print.print(this.text, offset);
-
-            Move.go(this);
-            while (true) this.split();
+            }
         }
 
-        public Front(List<StringBuilder> text, Func<List<StringBuilder>, byte> save) {
+        public Front(List<StringBuilder> text, Func<byte> save) {
             this.text = text;
             this.save = save;
+        }
+
+        public void run() {
             this.map = Print.print(this.text, offset);
             Move.go(this);
             while (true) this.split();
@@ -34,7 +34,7 @@ namespace front
             ConsoleKeyInfo key = Console.ReadKey(true);
             byte suc = key.Key switch {
                 ConsoleKey i when new ConsoleKey[] {ConsoleKey.UpArrow, ConsoleKey.DownArrow, ConsoleKey.LeftArrow, ConsoleKey.RightArrow}.Contains(i) => Move.move(key, this),
-                ConsoleKey i when key.Modifiers == ConsoleModifiers.Control && i == ConsoleKey.S => this.save(this.text),
+                ConsoleKey i when key.Modifiers == ConsoleModifiers.Control && i == ConsoleKey.S => this.save(),
                 ConsoleKey.Backspace => Edit.backspace(this),
                 ConsoleKey.Enter => Edit.enter(this),
                 _ => Edit.edit(this, key.KeyChar),

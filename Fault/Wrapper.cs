@@ -8,6 +8,7 @@ namespace back
         public string title;
         public string description;
         public Entry entry;
+        public front.Front front;
 
         public Wrapper(string dbname, string title=null, string description="") {
             if (File.Exists(dbname)) this.database = DataBase.load(dbname);
@@ -19,15 +20,24 @@ namespace back
                 this.entry = (Entry) this.database.search(Container.path);
             } catch {
                 this.entry = new Entry(title, description);
-            }
+            } this.front = new front.Front(this.entry.text, this.save);
         }
 
-        public byte save(List<StringBuilder> lines) {
-            this.entry.text = lines;
+        public byte save() {
             Container.save(this.database, this.entry);
             return 0;
         }
 
-        public void edit() => new front.Front(this.entry.text, this.save);
+        public void edit() {
+            Console.CancelKeyPress += onExit;
+            new Thread(this.front.run).Start();
+        }
+
+        public void onExit(object sender, ConsoleCancelEventArgs e) {
+            this.save();
+            this.database.refactor();
+            Console.Clear();
+            Environment.Exit(0);
+        }
     }
 }

@@ -5,7 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <NoWarn>CS8602, CS8603, CS8600, SYSLIB0041, SYSLIB0022, SYSLIB0023, CS8625, CS8618</NoWarn>
+    <NoWarn>CS8602, CS8603, CS8600, SYSLIB0041, SYSLIB0022, SYSLIB0023, CS8625, CS8618, CS8622</NoWarn>
   </PropertyGroup>
 
 </Project>
