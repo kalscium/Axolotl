@@ -13,7 +13,7 @@ namespace back
             this.index = (short) (DateTime.Now - new DateTime(DateTime.Now.Year, 1, 1)).TotalDays;
             this.title = title is not null ? title: DateTime.Now.DayOfWeek.ToString();
             this.description = description;
-            this.text = new List<StringBuilder>();
+            this.text = new List<StringBuilder>() {new StringBuilder()};
         }
 
         public new string ToString() {
