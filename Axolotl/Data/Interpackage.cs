@@ -102,7 +102,7 @@ namespace data
             } throw new Exception("[Axolotl Bin] Error: Cannot find entry point for program");
         }
 
-        public static string getSign(string password, string cmd) => encryption.TwoWay.Encrypt(cmd, password);
+        public static string getSign(string password, string cmd) => encryption.PassHashing.hash($"{password}.{cmd}")[0];
 
         public static List<T2> listTo<T, T2>(List<T> list) {
             List<T2> result = new List<T2>();
