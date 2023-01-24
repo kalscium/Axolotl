@@ -27,7 +27,7 @@ namespace SeraDB
     public class Parser {
         public Nodes.Index index;
         public string fileLoc;
-        private Dictionary<int, object> cache = new Dictionary<int, object>();
+        public Dictionary<int, object> cache = new Dictionary<int, object>();
         public Dictionary<int, object> objCache = new Dictionary<int, object>();
 
         public Parser(string fileLoc) {
@@ -408,8 +408,8 @@ namespace SeraDB
 
     public class DataBase {
         public string filename;
-        private Parser parser;
-        private Nodes.Index index;
+        public Parser parser;
+        public Nodes.Index index;
         private uint fline;
 
         public static DataBase load(string filename) {

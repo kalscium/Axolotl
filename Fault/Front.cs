@@ -21,6 +21,13 @@ namespace front
             while (true) this.split();
         }
 
+        public Front(List<StringBuilder> text) {
+            this.text = text;
+            this.map = Print.print(this.text, offset);
+            Move.go(this);
+            while (true) this.split();
+        }
+
         public void split() {
             ConsoleKeyInfo key = Console.ReadKey(true);
             byte suc = key.Key switch {
