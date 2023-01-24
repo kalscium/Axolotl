@@ -29,8 +29,8 @@ namespace back
         }
 
         public void edit() {
-            Console.CancelKeyPress += onExit;
-            new Thread(this.front.run).Start();
+            new Thread(() => Console.CancelKeyPress += onExit).Start();
+            this.front.run();
         }
 
         public void onExit(object sender, ConsoleCancelEventArgs e) {

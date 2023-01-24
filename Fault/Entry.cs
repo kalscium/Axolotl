@@ -3,7 +3,7 @@ using System.Text;
 namespace back
 {
     public class Entry {
-        public static string sign = "What the fuck";
+        public static string sign = "P@55w0r&";
         public short index;
         public string title;
         public string description;
@@ -16,10 +16,12 @@ namespace back
             this.text = new List<StringBuilder>() {new StringBuilder()};
         }
 
-        public new string ToString() {
+        public new string ToString() => encryption.TwoWay.Encrypt(toString(), sign);
+
+        public string toString() {
             StringBuilder data = new StringBuilder();
             for (int i = 0; i < this.text.Count; i++) data.AppendLine(this.text[i].ToString());
-            return encryption.TwoWay.Encrypt(data.ToString(), sign);
+            return data.ToString();
         }
 
         public static List<StringBuilder> FromString(string text) {
