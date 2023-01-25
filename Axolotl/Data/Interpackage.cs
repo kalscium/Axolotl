@@ -18,7 +18,7 @@ namespace data
             this.values = arg.values;
             this.order = arg.order;
 
-            this.sign = Interpackage.getSign(password, cmds[0]);
+            this.sign = this.getSign(password, cmds[0]);
         }
 
         public Interpackage(List<byte> order, List<string> switches, List<dynamic> values) {
@@ -102,7 +102,7 @@ namespace data
             } throw new Exception("[Axolotl Bin] Error: Cannot find entry point for program");
         }
 
-        public static string getSign(string password, string cmd) => encryption.PassHashing.hash($"{password}.{cmd}")[0];
+        public string getSign(string password, string cmd) => encryption.PassHashing.hash($"{password}.{cmd}", Convert.FromBase64String(this.user.password.salt))[0];
 
         public static List<T2> listTo<T, T2>(List<T> list) {
             List<T2> result = new List<T2>();
