@@ -8,10 +8,14 @@ namespace back
         public string title;
         public string description;
         public List<StringBuilder> text;
+        public string date;
+        public string day;
 
         public Entry(string title=null, string description="") {
             this.index = (short) (DateTime.Now - new DateTime(DateTime.Now.Year, 1, 1)).TotalDays;
-            this.title = title is not null ? title: DateTime.Now.DayOfWeek.ToString();
+            this.day = DateTime.Now.DayOfWeek.ToString();
+            this.date = DateTime.Now.ToString("dd/MM/yyyy");
+            this.title = title is not null ? title: this.day;
             this.description = description;
             this.text = new List<StringBuilder>() {new StringBuilder()};
         }
@@ -35,13 +39,14 @@ namespace back
 
         public Entry(SeraDB.Entry entry) {}
 
-
         public object SeraDB {
             get {
                 return new object[] {
                     this.index,
                     this.title,
                     this.description,
+                    this.date,
+                    this.day,
                     this.ToString(),
                 };
             } set {
@@ -49,7 +54,9 @@ namespace back
                 this.index = (short) list[0];
                 this.title = (string) list[1];
                 this.description = (string) list[2];
-                this.text = FromString((string) list[3]);
+                this.date = (string) list[3];
+                this.day = (string) list[4];
+                this.text = FromString((string) list[5]);
             }
         }
     }

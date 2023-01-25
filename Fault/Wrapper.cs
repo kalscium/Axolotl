@@ -35,6 +35,7 @@ namespace back
 
         public void onExit(object sender, ConsoleCancelEventArgs e) {
             this.save();
+            this.database.remove("__init__");
             this.database.refactor();
             Console.Clear();
             Environment.Exit(0);

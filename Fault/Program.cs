@@ -7,7 +7,7 @@ namespace axolotl
             "fault",
             "Used to store text logs within a secure encrypted database. Or in other words, a secure digital diary.",
             new string[] {"e"},
-            new string[] {"Ejects the entries as an unencrypted directory, for reading and or viewing"},
+            new string[] {"Exports the entries as an unencrypted directory, for reading and or viewing"},
             new string[] {
                 "fault <database loc> <(optional) title> <(optional) description>",
                 "fault \"Diary.sldb\" \"The Incident\" \"A incident happened with dave today.\"",
@@ -24,12 +24,21 @@ namespace axolotl
             Intrapackage interpackage = new Intrapackage(axo);
             back.Entry.sign = interpackage.sign;
 
-            back.Wrapper wrapper = null;
-
             if (interpackage.values.Count == 0) {
                 Console.WriteLine("[Fault] Error: DataBase location required");
                 return;
-            } else if (interpackage.values.Count == 1) {
+            }
+
+            if (interpackage.checkSwitch("e")) {
+                SeraDB.DataBase database = back.Export.getDataBase(interpackage.values[0]);
+                if (database is null) return;
+                back.Export.export(database);
+                return;
+            }
+
+            back.Wrapper wrapper = null;
+
+            if (interpackage.values.Count == 1) {
                 wrapper = new back.Wrapper(interpackage.values[0]);
             } else if (interpackage.values.Count == 2) {
                 wrapper = new back.Wrapper(interpackage.values[0], interpackage.values[1]);

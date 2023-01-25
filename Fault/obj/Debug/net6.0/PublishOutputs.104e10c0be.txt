@@ -1,0 +1,5 @@
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/bin/Debug/net6.0/publish/Fault
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/bin/Debug/net6.0/publish/Fault.dll
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/bin/Debug/net6.0/publish/Fault.deps.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/bin/Debug/net6.0/publish/Fault.runtimeconfig.json
+/media/greenchild/Gata/Ethan/Home/Github/Axolotl/Fault/bin/Debug/net6.0/publish/Fault.pdb
