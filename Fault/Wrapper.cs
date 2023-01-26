@@ -9,10 +9,11 @@ namespace back
         public string description;
         public Entry entry;
         public front.Front front;
+        private bool init;
 
         public Wrapper(string dbname, string title=null, string description="") {
             if (File.Exists(dbname)) this.database = DataBase.load(dbname);
-            else this.database = new DataBase(dbname, new Dictionary<string, object> {{"__init__", "__init__"}});
+            else { this.database = new DataBase(dbname, new Dictionary<string, object> {{"__init__", "__init__"}}); init = true; }
             this.title = title;
             this.description = description;
 
@@ -35,8 +36,9 @@ namespace back
 
         public void onExit(object sender, ConsoleCancelEventArgs e) {
             this.save();
-            this.database.remove("__init__");
+            if (this.init) { this.database.remove("__init__"); this.init = false; }
             this.database.refactor();
+            Console.ResetColor();
             Console.Clear();
             Environment.Exit(0);
         }

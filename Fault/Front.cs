@@ -59,11 +59,15 @@ namespace front
 
                 cli.text[line].Remove(idx - 1, 1);
 
-                cli.pos[0]--;
-                Move.go(cli);
+                Move.safeGo(-1, true, cli);
 
                 if (cli.map[cli.pos[1]][0] > Console.WindowWidth - 2) {
                     cli.map = Print.print(cli.text, cli.offset);
+                } else if (cli.map[cli.pos[1]][0] < 2 && cli.map[cli.pos[1]][2] > 0) {
+                    cli.map = Print.print(cli.text, cli.offset);
+                    Move.safeGo(1, false, cli);
+                    cli.pos[0] = Console.WindowWidth;
+                    Move.go(cli);
                 } else {
                     console(cli);
                     Console.Write(' ');
@@ -106,7 +110,13 @@ namespace front
             private static byte store(Front cli, char key) {
                 (int line, int idx) = point(cli);
                 cli.text[line].Insert(idx, key);
-                if (cli.map[cli.pos[1]][0] > Console.WindowWidth - 2) {
+                if (cli.pos[0] == Console.WindowWidth) {
+                    cli.map = Print.print(cli.text, cli.offset);
+                    Move.safeGo(-1, false, cli);
+                    cli.pos[0] = 3;
+                    Move.go(cli);
+                    return 1;
+                } else if (cli.map[cli.pos[1]][0] > Console.WindowWidth - 3) {
                     cli.map = Print.print(cli.text, cli.offset);
                     Move.safeGo(1, true, cli);
                     return 1;
@@ -157,11 +167,11 @@ namespace front
                 else cli.pos[1] = cli.map.Count - 1;
 
                 if (cli.pos[0] < 2 && cli.map[cli.pos[1]][2] > 0) {cli.pos[0] = 2; safeGo(1, false, cli); cli.pos[0] = cli.map[cli.pos[1]][0];}
-                else if (cli.pos[0] < 2 && cli.map[cli.pos[1]][1] != 0) {cli.pos[0] = Console.WindowWidth; safeGo(1, false, cli);}
+                else if (cli.pos[0] < 2 && cli.map[cli.pos[1]][1] != 0) {cli.pos[0] = Console.WindowWidth - 1; safeGo(1, false, cli);}
                 else if (cli.pos[0] < 2) cli.pos[0] = 2;
-                else if (cli.pos[0] == cli.map[cli.pos[1]][0] + 3 && !(cli.pos[1] == cli.map.Count - 1 && cli.map[cli.pos[1]][1] != cli.map.Count - 1)) {cli.pos[0] = 2; safeGo(-1, false, cli);}
+                // else if (cli.pos[0] == cli.map[cli.pos[1]][0] + 3 && !(cli.pos[1] == cli.map.Count - 1 && cli.map[cli.pos[1]][1] != cli.map.Count - 1)) {cli.pos[0] = 2; safeGo(-1, false, cli);}
                 else if (cli.pos[0] >= cli.map[cli.pos[1]][0] + 3) cli.pos[0] = cli.map[cli.pos[1]][0] + 2;
-                else if (cli.pos[0] == Console.WindowWidth && !(cli.pos[1] == cli.map.Count - 1 && cli.map[cli.pos[1]][1] != cli.map.Count - 1)) {cli.pos[0] = 2; safeGo(-1, false, cli);}
+                else if (cli.pos[0] == Console.WindowWidth && !(cli.pos[1] == cli.map.Count - 1 && cli.map[cli.pos[1]][1] == cli.map.Count - 1)) {cli.pos[0] = 2; safeGo(-1, false, cli);}
                 else if (cli.pos[0] >= Console.WindowWidth) cli.pos[0] = Console.WindowWidth - 1;
             }
 
