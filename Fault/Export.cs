@@ -4,7 +4,7 @@ namespace back
 {
     public static class Export {
         public static void export(DataBase database) {
-            string dir = $"{database.filename}.log";
+            string dir = $"({database.filename})";
             Directory.CreateDirectory(dir);
             Entry[] entries = pull(database);
             string index = "===( Index )===\n";

@@ -163,8 +163,8 @@ namespace front
             public static void mkValid(Front cli) {
                 if (cli.pos[1] < 0) if (cli.offset > 0) {cli.offset--; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = 0;}
                 else cli.pos[1] = 0;
-                else if (cli.pos[1] >= cli.map.Count) if (cli.offset < cli.text.Count - 1) {cli.offset++; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = cli.map.Count - 1;}
-                else cli.pos[1] = cli.map.Count - 1;
+                else if (cli.pos[1] >= cli.map.Count - 1) if (cli.offset < cli.map.Count + cli.map[cli.map.Count -1][0] - 2) {cli.offset++; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = cli.map.Count - 2;}
+                else cli.pos[1] = cli.map.Count - 2;
 
                 if (cli.pos[0] < 2 && cli.map[cli.pos[1]][2] > 0) {cli.pos[0] = 2; safeGo(1, false, cli); cli.pos[0] = cli.map[cli.pos[1]][0];}
                 else if (cli.pos[0] < 2 && cli.map[cli.pos[1]][1] != 0) {cli.pos[0] = Console.WindowWidth - 1; safeGo(1, false, cli);}
@@ -201,28 +201,34 @@ namespace front
         public static List<int[]> print(List<System.Text.StringBuilder> text, int offset) {
             Console.BackgroundColor = background;
             Console.Clear();
-            int x = Console.WindowWidth;
+            int x = Console.WindowWidth - 2;
             int y = Console.WindowHeight - 1;
-            List<int[]> lines = new List<int[]>();
+            List<int[]> map = new List<int[]>();
+            string[][] lines = new string[text.Count][];
             int ln = 0;
 
-            for (int i = offset; ln < y && i < text.Count; i++) {
-                string[] result = line(text[i].ToString(), ref ln, x - 2, i, ref lines, 0).Split('\n');
+            for (int i = 0; i < text.Count; i++) lines[i] = split(text[i].ToString(), x);
 
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write($"{Base85Encode(i + 1)}\u2502");
-                Console.ForegroundColor = foreground;
-                System.Console.WriteLine(result[0]);
-
-                for (int a = 1; a < result.Length; a++) {
+            for (int o = 0; o < lines.Length; o++) {
+                int idx = 0;
+                for (int i = 0; i < lines[o].Length && ln < y + offset; i++) {
+                    if (ln < offset) {
+                        ln++;
+                        if (lines[o].Length -i -1 == 0) idx += lines[o][i].Length - 1;
+                        else idx += lines[o][i].Length;
+                        continue;
+                    } ln++;
+                    
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("-\u2502");
+                    if (i == 0) Console.Write($"{Base85Encode(o + 1)}\u2502");
+                    else Console.Write("-\u2502");
                     Console.ForegroundColor = foreground;
-                    System.Console.WriteLine(result[a]);
-                }
-            }
 
-            while (ln < y) {
+                    Console.WriteLine(line(lines[o][i], x, o, ref map, ref idx, lines[o].Length - i - 1, i == 0));
+                }
+            } map.Add(new int[] {offset});
+
+            while (ln < y + offset) {
                 ln++;
                 Console.BackgroundColor = background;
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -230,31 +236,33 @@ namespace front
                 Console.ResetColor();
             }
             
-            return lines;
+            return map;
         }
 
-        private static string line(string str, ref int ln, int x, int i, ref List<int[]> lines, int idx, bool num=true) {
-            ln++;
-            lines.Add(new int[3]);
-            int lin = lines.Count - 1; // Replacement word for line
-
-            string result = "";
-            bool longer = false;
-
-            if (str.Length <= x) result = str;
-            else {
-                result = $"{new string(str.ToCharArray(0, x))}\n";
-                longer = true;
-            }
+        private static string[] split(string str, int idx) {
+            List<string> res = new List<string>();
+            for (int i = 0; i < str.Length; i += idx) {
+                int length = Math.Min(idx, str.Length - i);
+                res.Add(str.Substring(i, length));
+            } if (res.Count < 1) res.Add(""); 
             
+            return res.ToArray();
+        }
+
+        private static string line(string str, int x, int i, ref List<int[]> lines, ref int before, int after, bool num) {
+            lines.Add(new int[3]);
+            int lin = lines.Count - 1;
+
+            string result; 
+            if (after == 0) result = str;
+            else result = str + '\n';
+
             lines[lin][0] = result.Length;
             lines[lin][1] = i;
-            lines[lin][2] = idx;
-            idx += result.Length - 1;
+            lines[lin][2] = before;
+            before += result.Length - 1;
 
-            if (longer) result += line(new string(str.Skip(x).ToArray()), ref ln, x, i, ref lines, idx, false);
-
-            return result;
+            return str;
         }
 
         private static string Base85Encode(int num)
