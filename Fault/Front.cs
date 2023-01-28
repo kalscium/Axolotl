@@ -6,7 +6,7 @@ namespace front
         public List<StringBuilder> text;
         public int[] pos = {2, 0};
         public int offset = 0;
-        public List<int[]> map;
+        public int[][] map;
         public string filename = "null";
         public Func<byte> save;
 
@@ -163,15 +163,15 @@ namespace front
             public static void mkValid(Front cli) {
                 if (cli.pos[1] < 0) if (cli.offset > 0) {cli.offset--; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = 0;}
                 else cli.pos[1] = 0;
-                else if (cli.pos[1] >= cli.map.Count - 1) if (cli.offset < cli.map.Count + cli.map[cli.map.Count -1][0] - 2) {cli.offset++; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = cli.map.Count - 2;}
-                else cli.pos[1] = cli.map.Count - 2;
+                else if (cli.pos[1] >= cli.map.Length - 1) if (cli.offset < cli.map.Length + cli.map[cli.map.Length -1][0] - 2) {cli.offset++; cli.map = Print.print(cli.text, cli.offset); cli.pos[1] = cli.map.Length - 2;}
+                else cli.pos[1] = cli.map.Length - 2;
 
                 if (cli.pos[0] < 2 && cli.map[cli.pos[1]][2] > 0) {cli.pos[0] = 2; safeGo(1, false, cli); cli.pos[0] = cli.map[cli.pos[1]][0];}
                 else if (cli.pos[0] < 2 && cli.map[cli.pos[1]][1] != 0) {cli.pos[0] = Console.WindowWidth - 1; safeGo(1, false, cli);}
                 else if (cli.pos[0] < 2) cli.pos[0] = 2;
                 // else if (cli.pos[0] == cli.map[cli.pos[1]][0] + 3 && !(cli.pos[1] == cli.map.Count - 1 && cli.map[cli.pos[1]][1] != cli.map.Count - 1)) {cli.pos[0] = 2; safeGo(-1, false, cli);}
                 else if (cli.pos[0] >= cli.map[cli.pos[1]][0] + 3) cli.pos[0] = cli.map[cli.pos[1]][0] + 2;
-                else if (cli.pos[0] == Console.WindowWidth && !(cli.pos[1] == cli.map.Count - 1 && cli.map[cli.pos[1]][1] == cli.map.Count - 1)) {cli.pos[0] = 2; safeGo(-1, false, cli);}
+                else if (cli.pos[0] == Console.WindowWidth && !(cli.pos[1] == cli.map.Length - 1 && cli.map[cli.pos[1]][1] == cli.map.Length - 1)) {cli.pos[0] = 2; safeGo(-1, false, cli);}
                 else if (cli.pos[0] >= Console.WindowWidth) cli.pos[0] = Console.WindowWidth - 1;
             }
 
@@ -182,7 +182,7 @@ namespace front
                     if (pos >= Console.WindowWidth) return false;
                 } else {
                     if (pos < 0) return false;
-                    if (pos >= cli.map.Count) return false;
+                    if (pos >= cli.map.Length) return false;
                     if (pos >= Console.WindowHeight) return false;
                 } return true;
             }
@@ -198,17 +198,21 @@ namespace front
             this.text = text;
         }
 
-        public static List<int[]> print(List<System.Text.StringBuilder> text, int offset) {
+        public static int[][] print(List<StringBuilder> text, int offset) {
             Console.BackgroundColor = background;
             Console.Clear();
             int x = Console.WindowWidth - 2;
             int y = Console.WindowHeight - 1;
-            List<int[]> map = new List<int[]>();
             string[][] lines = new string[text.Count][];
             int ln = 0;
 
             for (int i = 0; i < text.Count; i++) lines[i] = split(text[i].ToString(), x);
 
+            int totalLength = 0;
+            for (int i = 0; i < lines.Length; i++) totalLength += lines[i].Length;
+            int[][] map = new int[Math.Min(totalLength - offset, y) + 1][];
+
+            int open = 0;
             for (int o = 0; o < lines.Length; o++) {
                 int idx = 0;
                 for (int i = 0; i < lines[o].Length && ln < y + offset; i++) {
@@ -224,9 +228,10 @@ namespace front
                     else Console.Write("-\u2502");
                     Console.ForegroundColor = foreground;
 
-                    Console.WriteLine(line(lines[o][i], x, o, ref map, ref idx, lines[o].Length - i - 1, i == 0));
+                    Console.WriteLine(line(lines[o][i], x, o, ref map, ref idx, lines[o].Length - i - 1, open, i == 0));
+                    open++;
                 }
-            } map.Add(new int[] {offset});
+            } map[map.Length -1] = new int[] {offset};
 
             while (ln < y + offset) {
                 ln++;
@@ -249,17 +254,16 @@ namespace front
             return res.ToArray();
         }
 
-        private static string line(string str, int x, int i, ref List<int[]> lines, ref int before, int after, bool num) {
-            lines.Add(new int[3]);
-            int lin = lines.Count - 1;
+        private static string line(string str, int x, int i, ref int[][] lines, ref int before, int after, int open, bool num) {
+            lines[open] = new int[3];
 
             string result; 
             if (after == 0) result = str;
             else result = str + '\n';
 
-            lines[lin][0] = result.Length;
-            lines[lin][1] = i;
-            lines[lin][2] = before;
+            lines[open][0] = result.Length;
+            lines[open][1] = i;
+            lines[open][2] = before;
             before += result.Length - 1;
 
             return str;
