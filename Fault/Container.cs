@@ -18,11 +18,14 @@ namespace back
             return currentDate switch
             {
                 DateTime d when d.Month == 1 && d.Day >= 1 && d.Day <= 30 => "PreHolidays",
-                DateTime d when (d.Month == 1 && d.Day >= 31) || d.Month == 2 || (d.Month == 3 && d.Day <= 25) => "Term1",
-                DateTime d when (d.Month == 4 && d.Day >= 26) || d.Month == 5 || d.Month == 6 || (d.Month == 7 && d.Day <= 10) => "Term2",
-                DateTime d when (d.Month == 7 && d.Day >= 11) || d.Month == 8 || d.Month == 9 || (d.Month == 10 && d.Day <= 2) => "Term3",
-                DateTime d when (d.Month == 10 && d.Day >= 3) || d.Month == 11 || (d.Month == 12 && d.Day <= 20) => "Term4",
-                DateTime d when d.Month == 12 && d.Day >= 21 => "PostHolidays",
+                DateTime d when (d.Month == 1 && d.Day >= 31) || d.Month == 2 || d.Month == 3 || (d.Month == 4 && d.Day <= 4) => "Term1",
+                DateTime d when (d.Month == 4 && d.Day <= 24) => "PostTerm1Holidays",
+                DateTime d when d.Month == 4 || d.Month == 5 || (d.Month == 6 && d.Day <= 23) => "Term2",
+                DateTime d when d.Month == 6 || (d.Month == 7 && d.Day < 10) => "PostTerm2Holidays",
+                DateTime d when d.Month == 7 || d.Month == 8 || (d.Month == 9 && d.Day <= 15) => "Term3",
+                DateTime d when d.Month == 9 || (d.Month == 10 && d.Day < 2) => "PostTerm3Holidays",
+                DateTime d when d.Month == 10 || d.Month == 11 || (d.Month == 12 && d.Day <= 20) => "Term4",
+                DateTime d when d.Month == 12 && d.Day >= 21 => "PostSchoolHolidays",
                 _ => "Not within term"
             };
         }
